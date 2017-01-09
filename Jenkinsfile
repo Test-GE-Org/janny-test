@@ -9,9 +9,9 @@ node {
         mvnHome = tool 'M3'
     }
     stage('Build') {
-    	sh "cd complete"
+    
         // Run the maven build
-        sh "'${mvnHome}/bin/mvn' -Dmaven.test.failure.ignore clean package"
+        sh "cd complete;'${mvnHome}/bin/mvn' -Dmaven.test.failure.ignore clean package"
     }
     stage('DeployToDev') {
         echo "deploying to dev env"
