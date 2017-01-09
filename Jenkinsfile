@@ -11,7 +11,7 @@ node {
     stage('Build') {
     
         // Run the maven build
-        sh "cd complete;'${mvnHome}/bin/mvn' -Dmaven.test.failure.ignore clean package"
+        sh "'${mvnHome}/bin/mvn' -Dmaven.test.failure.ignore clean package"
     }
     stage('DeployToDev') {
         echo "deploying to dev env"
