@@ -7,22 +7,17 @@ node {
         // get source code
         checkout scm
 
-        gradle = load 'jenkins/gradle.groovy'
-
-        // check that the whole project compiles
-        //gradle 'clean compileJava'
-        gradle.cleanAndCompile()
-
+      
         // save source code so we don't need to get it every time and also avoids conflicts
         stash excludes: 'build/', includes: '**', name: 'source'
 
         // execute required tests for commit stage in parallel
         parallel (
              "unit tests" : {
-                gradle.test()
+                echo "Unit test"
              },
              "commit integration tests" : {
-                gradle.test('integration-test', '-PhappyPath')
+                echo "Integration test"
              }
            )
 
