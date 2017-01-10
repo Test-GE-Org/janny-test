@@ -8,83 +8,50 @@ node {
         // **       in the global configuration.
         mvnHome = tool 'M3'
     }
-    stage('Build') {
+     stage('Unit test') {
     
+        // Run the maven build
+        sh "'${mvnHome}/bin/mvn' test"
+    }
+    stage('Build') {
         // Run the maven build
         sh "'${mvnHome}/bin/mvn' -Dmaven.test.failure.ignore clean package"
     }
-    stage('DeployToDev') {
+  
+    stage('Jacoco Code coverage') {
         echo "deploying to dev env"
     }
-    stage('StageArtifacts') {
-        junit '**/target/surefire-reports/TEST-*.xml'
-        archive 'target/*.jar'
-    }
-    stage('PromoteStaging') {
-        junit '**/target/surefire-reports/TEST-*.xml'
-        archive 'target/*.jar'
-    }
-    def deployJobs = [:]
+    def testingJobs = [:]
 
-    deployJobs["staging"] = {
+    testingJobs["Integration testing"] = {
         node {
             echo "deploying to staging environment."
             sleep 10
             echo "deployed staging sucessfully"
         }
     }
-    deployJobs["perf"] = {
+    testingJobs["Performance testing"] = {
         node {
             echo "deploying to perf environment."
             sleep 10
             echo "deployed sucessfully"
         }
     }
-    stage('Deploy') {
-        parallel deployJobs
+    
+    
+    stage('Testing') {
+        parallel testingJobs
     }
-    def UItestJobs = [:]
-    UItestJobs["chrome"] = {
-        node {
-            echo 'Starting Selenium Tests For Chrome Browser'
-            sleep 10
-            echo 'Finished Chrome tests'
-        }
+  
+  
+  
+    stage('StageArtifacts') {
+        junit '**/target/surefire-reports/TEST-*.xml'
+        archive 'target/*.jar'
     }
-    UItestJobs["safari"] = {
-
-        node {
-            echo 'Starting Selenium Tests For safari Browser'
-            sleep 10
-            echo 'Finished firefox tests'
-        }
-    }
-    UItestJobs["firefox"] = {
-
-        node {
-            echo 'Starting Selenium Tests For safari Browser'
-            sleep 10
-            echo 'Finished firefox tests'
-        }
-    }
-    UItestJobs["IE"] = {
-
-        node {
-            echo 'Starting Selenium Tests For safari Browser'
-            sleep 10
-            echo 'Finished firefox tests'
-        }
-    }
-    stage('IntegrationTests') {
-        echo "running integration tests"
-        sleep 10
-        echo "finished integration tests"
-    }
-    stage("SeleniumTests") {
-        echo "running selenium tests.."
-        parallel UItestJobs
-        echo "finished selenium tests"
-    }
+  
+  
+    
     def complTests = [:]
     complTests["OSSCAR"] = {
         node {
@@ -106,26 +73,10 @@ node {
         echo "finished compliance tests"
     }
 
-    stage("Promote") {
-        echo "running approval stage"
-        echo "waiting for approval to promote production"
-        sleep 10
-        echo "got approval to promote production..proceeding"
-    }
     stage("Deploy") {
         echo "deploying to production"
         sleep 10
         echo "finished deploy to production"
     }
-    stage("SmokeTest") {
-        echo "Running smoke tests on production"
-	sh "date"
-        sleep 10
-        echo "smoke tests completed. PASSED"
-    }
-    stage("Finish") {
-        echo "Switch Routes, new version live"
-        sleep 10
-        echo "routes switched. Production OK"
-    }
+   
 }
