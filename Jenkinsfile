@@ -1,5 +1,5 @@
 
-node ("mesos-java8"){
+node {
     def mvnHome
     stage('GitCheckout') { // for display purposes
         // Get some code from a GitHub repository
