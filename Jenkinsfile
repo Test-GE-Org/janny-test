@@ -12,6 +12,7 @@ node {
         mvnHome = tool 'M3'
           def pom = readMavenPom file: 'pom.xml'
           def version = pom.version.replace("-SNAPSHOT", ".${currentBuild.number}")
+          echo "${version}"
         
         // Run the maven build
         sh "${mvnHome}/bin/mvn -DreleaseVersion=${version} -DdevelopmentVersion=${pom.version} -DpushChanges=false -DlocalCheckout=true -DpreparationGoals=initialize release:prepare release:perform -B"
