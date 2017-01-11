@@ -16,6 +16,9 @@ node {
     stage('Build') {
         // Run the maven build
         sh "'${mvnHome}/bin/mvn' -Dmaven.test.failure.ignore clean package"
+        
+         stash includes: 'target/coverage-reports/*.exec', name: 'unitCodeCoverage'
+         
     }
   
     stage('Jacoco Code coverage') {
