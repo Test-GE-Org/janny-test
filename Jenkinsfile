@@ -45,10 +45,6 @@ node {
   
   
   
-    stage('StageArtifacts') {
-        junit '**/target/surefire-reports/TEST-*.xml'
-        archive 'target/*.jar'
-    }
   
   
     
@@ -73,6 +69,12 @@ node {
         echo "finished compliance tests"
     }
 
+
+    stage('StageArtifacts') {
+        junit '**/target/surefire-reports/TEST-*.xml'
+        archive 'target/*.jar'
+    }
+    
     stage("Deploy") {
         echo "deploying to production"
         sleep 10
