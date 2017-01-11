@@ -12,11 +12,11 @@ node {
     
         // Run the maven build
         sh "'${mvnHome}/bin/mvn' test"
+        step([$class: 'JUnitResultArchiver', testResults: '**/target/surefire-reports/TEST-*.xml'])
     }
     stage('Build') {
         // Run the maven build
         sh "'${mvnHome}/bin/mvn' -Dmaven.test.failure.ignore clean package"
-        
          stash includes: 'target/coverage-reports/*.exec', name: 'unitCodeCoverage'
          
     }
