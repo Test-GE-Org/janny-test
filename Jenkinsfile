@@ -8,24 +8,39 @@ node {
         // **       in the global configuration.
         mvnHome = tool 'M3'
     }
-     stage('Unit test') {
-    
-        // Run the maven build
-        sh "'${mvnHome}/bin/mvn' test"
-        step([$class: 'JUnitResultArchiver', testResults: '**/target/surefire-reports/TEST-*.xml'])
-    }
     stage('Build') {
         // Run the maven build
-        sh "'${mvnHome}/bin/mvn' -Dmaven.test.failure.ignore clean package"
+        sh "'${mvnHome}/bin/mvn' clean package -B -V -U -e -DskipTests"
          
          
     }
-  
-    stage('Jacoco Code coverage') {
-        sh "${mvnHome}/bin/mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent test"
-        stash includes: 'target/coverage-reports/*.exec', name: 'unitCodeCoverage'
+    
+    stage('Static Code Analysis') {
+        sh "'${mvnHome}/bin/mvn' checkstyle:check pmd:check pmd:cpd-check findbugs:check -B -e"
+            step([$class: 'CheckStylePublisher', pattern: 'target/checkstyle-result.xml'])
+            step([$class: 'FindBugsPublisher', pattern: 'target/findbugsXml.xml'])
+            step([$class: 'PmdPublisher', pattern: 'target/pmd.xml'])
+            step([$class: 'DryPublisher', pattern: 'target/cpd.xml'])
+            step([$class: 'TasksPublisher', high: 'FIXME', low: '', normal: 'TODO', pattern: 'src/**/*.java'])
+        }
+
+        stage('Documentation') {
+            sh "'${mvnHome}/bin/mvn' javadoc:javadoc -B -e"
+            step([$class: 'JavadocArchiver', javadocDir: 'target/site/apidocs', keepAll: false])
+        }
+
+
+        stage('Unit Tests') {
+            sh "'${mvnHome}/bin/mvn' test-compile jacoco:prepare-agent surefire:test -B -e"
+            step([$class: 'JUnitResultArchiver', testResults: 'target/surefire-reports/TEST-*.xml'])
+        }
         
-    }
+   stage('Code Coverage') {
+            step([$class: 'JacocoPublisher', execPattern: 'target/jacoco.exec', exclusionPattern: '**/Messages.class'])
+        }
+        
+        
+        
     def testingJobs = [:]
 
     testingJobs["Integration testing"] = {
@@ -73,6 +88,11 @@ node {
         parallel complTests
         echo "finished compliance tests"
     }
+
+
+        stage('Archive Artifacts') {
+            step([$class: 'ArtifactArchiver', artifacts: 'target/*.hpi,target/*.jpi', fingerprint: true])
+        }
 
 
     stage('StageArtifacts') {
