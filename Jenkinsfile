@@ -17,12 +17,14 @@ node {
     stage('Build') {
         // Run the maven build
         sh "'${mvnHome}/bin/mvn' -Dmaven.test.failure.ignore clean package"
-         stash includes: 'target/coverage-reports/*.exec', name: 'unitCodeCoverage'
+         
          
     }
   
     stage('Jacoco Code coverage') {
-        echo "deploying to dev env"
+        sh "${mvnHome}/bin/mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent test"
+        stash includes: 'target/coverage-reports/*.exec', name: 'unitCodeCoverage'
+        
     }
     def testingJobs = [:]
 
