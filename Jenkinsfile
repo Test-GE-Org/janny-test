@@ -16,7 +16,7 @@ node {
     }
     
     stage('Static Code Analysis') {
-        sh "'${mvnHome}/bin/mvn' checkstyle:check pmd:check pmd:cpd-check findbugs:check -B -e"
+        sh "'${mvnHome}/bin/mvn' checkstyle:checkstyle pmd:pmd findbugs:findbugs -B -e"
             step([$class: 'CheckStylePublisher', pattern: 'target/checkstyle-result.xml'])
             step([$class: 'FindBugsPublisher', pattern: 'target/findbugsXml.xml'])
             step([$class: 'PmdPublisher', pattern: 'target/pmd.xml'])
