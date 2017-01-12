@@ -24,8 +24,6 @@ node ("mesos-java8") {
         sh "'${mvnHome}/bin/mvn' checkstyle:checkstyle pmd:pmd findbugs:findbugs -B -e"
             step([$class: 'CheckStylePublisher', pattern: 'target/checkstyle-result.xml'])
             step([$class: 'FindBugsPublisher', pattern: 'target/findbugsXml.xml'])
-            step([$class: 'PmdPublisher', pattern: 'target/pmd.xml'])
-            step([$class: 'DryPublisher', pattern: 'target/cpd.xml'])
             step([$class: 'TasksPublisher', high: 'FIXME', low: '', normal: 'TODO', pattern: 'src/**/*.java'])
         }
 
