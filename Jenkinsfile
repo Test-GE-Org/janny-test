@@ -38,7 +38,7 @@ node ("mesos-java8") {
         }
         
    stage('Code Coverage') {
-            step([$class: 'JacocoPublisher', execPattern: 'target/jacoco.exec', exclusionPattern: '**/Messages.class'])
+            step([$class: 'JacocoPublisher', execPattern: 'target/coverage-reports/jacoco*.exec', exclusionPattern: '**/Messages.class'])
         }
         
         
