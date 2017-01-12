@@ -24,19 +24,24 @@ node ("mesos-java8") {
     }
     
     stage('Static Code Analysis') {
-        sh "'${mvnHome}/bin/mvn' checkstyle:checkstyle pmd:pmd findbugs:findbugs -B -e"
+
+        //sh "'${mvnHome}/bin/mvn' checkstyle:checkstyle pmd:pmd findbugs:findbugs -B -e"
+        rtMaven.run pom: 'pom.xml', goals: 'checkstyle:checkstyle pmd:pmd findbugs:findbugs -B -e'
+
             step([$class: 'CheckStylePublisher', pattern: 'target/checkstyle-result.xml'])
             step([$class: 'FindBugsPublisher', pattern: 'target/findbugsXml.xml'])
         }
 
         stage('Documentation') {
-            sh "'${mvnHome}/bin/mvn' javadoc:javadoc -B -e"
+            //sh "'${mvnHome}/bin/mvn' javadoc:javadoc -B -e"
+            rtMaven.run pom: 'pom.xml', goals: 'javadoc:javadoc -B -e'
             step([$class: 'JavadocArchiver', javadocDir: 'target/site/apidocs', keepAll: false])
         }
 
 
         stage('Unit Tests') {
-            sh "'${mvnHome}/bin/mvn' test-compile jacoco:prepare-agent surefire:test -B -e"
+            //sh "'${mvnHome}/bin/mvn' test-compile jacoco:prepare-agent surefire:test -B -e"
+            rtMaven.run pom: 'pom.xml', goals: 'test-compile jacoco:prepare-agent surefire:test -B -e'
             step([$class: 'JUnitResultArchiver', testResults: 'target/surefire-reports/TEST-*.xml'])
         }
         
