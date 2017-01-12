@@ -10,14 +10,17 @@ node ("mesos-java8") {
         // ** NOTE: This 'M3' Maven tool must be configured
         // **       in the global configuration.
         mvnHome = tool 'M3'
-        rtMaven.resolver server: artServer, releaseRepo: 'libs-release', snapshotRepo: 'libs-snapshot'
 
     }
     stage('Build') {
         // Run the maven build
-        sh "'${mvnHome}/bin/mvn' clean package -B -V -U -e -DskipTests"
-         
-         
+        //sh "'${mvnHome}/bin/mvn' clean package -B -V -U -e -DskipTests"
+        rtMaven.resolver server: artServer, releaseRepo: 'libs-release', snapshotRepo: 'libs-snapshot'
+        rtMaven.deployer.artifactDeploymentPatterns.addInclude("target/*.jar")
+        rtMaven.deployer.deployArtifacts = false
+        rtMaven.tool = 'M3'
+        def buildInfo = rtMaven.run pom: 'pom.xml', goals: 'clean install'
+        server.publishBuildInfo buildInfo
     }
     
     stage('Static Code Analysis') {
