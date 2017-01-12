@@ -17,10 +17,10 @@ node ("mesos-java8") {
         //sh "'${mvnHome}/bin/mvn' clean package -B -V -U -e -DskipTests"
         rtMaven.resolver server: artServer, releaseRepo: 'libs-release', snapshotRepo: 'libs-snapshot'
         rtMaven.deployer.artifactDeploymentPatterns.addInclude("target/*.jar")
-        //rtMaven.deployer.deployArtifacts = true
+        rtMaven.deployer.deployArtifacts = true
         rtMaven.tool = 'M3'
         def buildInfo = rtMaven.run pom: 'pom.xml', goals: 'clean install'
-        server.publishBuildInfo buildInfo
+        artServer.publishBuildInfo buildInfo
     }
     
     stage('Static Code Analysis') {
