@@ -42,65 +42,14 @@ node ("mesos-java8") {
         }
         
         
-        
-    def testingJobs = [:]
-
-    testingJobs["Integration testing"] = {
-        node {
-            echo "deploying to staging environment."
-            sleep 10
-            echo "deployed staging sucessfully"
-        }
-    }
-    testingJobs["Performance testing"] = {
-        node {
-            echo "deploying to perf environment."
-            sleep 10
-            echo "deployed sucessfully"
-        }
-    }
-    
-    
-    stage('Testing') {
-        parallel testingJobs
-    }
   
   
-  
-  
-  
-    
-    def complTests = [:]
-    complTests["OSSCAR"] = {
-        node {
-            echo "running OSSCAR tests"
-            sleep 10
-            echo "finished OSSCAR tests"
-        }
-    }
-    complTests["Tinfoil"] = {
-        node {
-            echo "running tinfoil tests"
-            sleep 10
-            echo "finished tinfoil tests"
-        }
-    }
-    stage("ComplianceTests") {
-        echo "starting compliance tests.."
-        parallel complTests
-        echo "finished compliance tests"
-    }
-
-
         stage('Archive Artifacts') {
-            step([$class: 'ArtifactArchiver', artifacts: 'target/*.hpi,target/*.jpi', fingerprint: true])
+            step([$class: 'ArtifactArchiver', artifacts: 'target/*.jar', fingerprint: true])
+            junit '**/target/surefire-reports/TEST-*.xml'
+        archive 'target/*.jar'
         }
 
-
-    stage('StageArtifacts') {
-        junit '**/target/surefire-reports/TEST-*.xml'
-        archive 'target/*.jar'
-    }
     
     stage("Deploy") {
         echo "deploying to production"
