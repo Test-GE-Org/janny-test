@@ -1,5 +1,8 @@
 node ("mesos-java8") {
     def mvnHome
+    def artServer = Artifactory.server('R2-artifactory')
+    def rtMaven = Artifactory.newMavenBuild()
+
     stage('GitCheckout') { // for display purposes
         // Get some code from a GitHub repository
         checkout scm
@@ -7,6 +10,8 @@ node ("mesos-java8") {
         // ** NOTE: This 'M3' Maven tool must be configured
         // **       in the global configuration.
         mvnHome = tool 'M3'
+        rtMaven.resolver server: artServer, releaseRepo: 'libs-release', snapshotRepo: 'libs-snapshot'
+
     }
     stage('Build') {
         // Run the maven build
