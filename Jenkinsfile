@@ -1,69 +1,152 @@
-@Library('servers') import demo.Servers
+try {
 
-jettyUrl = 'http://localhost:8081/'
-servers = new Servers(this)
+    stage('Dev') {
+        node ("mesos-java8") {
+            def artServer = Artifactory.server('R2-artifactory')
+            def rtMaven = Artifactory.newMavenBuild()
+            stage('GitCheckout') { 
+                checkout scm
+            }
+            stage('Build') {
+                rtMaven.resolver server: artServer, releaseRepo: 'libs-release', snapshotRepo: 'libs-snapshot'
+                rtMaven.deployer.artifactDeploymentPatterns.addInclude("target/*.jar")
+                rtMaven.deployer.deployArtifacts = true
+                rtMaven.tool = 'M3'
+                def buildInfo = rtMaven.run pom: 'pom.xml', goals: 'clean install'
+                artServer.publishBuildInfo buildInfo
+                def v = version()
+                if (v) {
+                    echo "Building version ${v}"
+                }
+            }
 
-stage('Dev') {
-    node {
-        checkout scm
-        mvn '-o clean package'
-        dir('target') {stash name: 'war', includes: 'x.war'}
-    }
-}
+            stage('Unit Tests') {
+                rtMaven.run pom: 'pom.xml', goals: 'test-compile jacoco:prepare-agent surefire:test -B -e'
+                step([$class: 'JUnitResultArchiver', testResults: 'target/surefire-reports/TEST-*.xml'])
+            }
 
-stage('QA') {
-    parallel(longerTests: {
-        runTests(30)
-    }, quickerTests: {
-        runTests(20)
-    })
-    echo "Test results: ${testResult(currentBuild)}"
-}
+            stage('Static Code Analysis') {
+                rtMaven.run pom: 'pom.xml', goals: 'checkstyle:checkstyle pmd:pmd findbugs:findbugs -B -e'
+                step([$class: 'CheckStylePublisher', pattern: 'target/checkstyle-result.xml'])
+                step([$class: 'FindBugsPublisher', pattern: 'target/findbugsXml.xml'])
+            }
 
-milestone 1
-stage('Staging') {
-    lock(resource: 'staging-server', inversePrecedence: true) {
-        milestone 2
-        node {
-            servers.deploy 'staging'
+            stage('Documentation') {
+                rtMaven.run pom: 'pom.xml', goals: 'javadoc:javadoc -B -e'
+                step([$class: 'JavadocArchiver', javadocDir: 'target/site/apidocs', keepAll: false])
+            }
+
+
+            stage('Code Coverage') {
+                step([$class: 'JacocoPublisher', execPattern: 'target/coverage-reports/jacoco*.exec', exclusionPattern: '**/Messages.class'])
+            }
+
+            stage('Archive Artifacts') {
+                step([$class: 'ArtifactArchiver', artifacts: 'target/*.jar', fingerprint: true])
+                junit '**/target/surefire-reports/TEST-*.xml'
+                archive 'target/*.jar'
+            }
+
+            stage("Deploy") {
+                echo "deploying to dev"
+                sleep 10
+                echo "finished deploy to dev"
+            }
         }
-        input message: "Does ${jettyUrl}staging/ look good?"
+        def version() {
+          def matcher = readFile('pom.xml') =~ '<version>(.+)</version>'
+          matcher ? matcher[0][1] : null
+        }
     }
-    try {
-        checkpoint('Before production')
-    } catch (NoSuchMethodError _) {
-        echo 'Checkpoint feature available in CloudBees Jenkins Enterprise.'
-    }
-}
 
-milestone 3
-stage ('Production') {
-    lock(resource: 'production-server', inversePrecedence: true) {
-        node {
-            sh "wget -O - -S ${jettyUrl}staging/"
-            echo 'Production server looks to be alive'
-            servers.deploy 'production'
-            echo "Deployed to ${jettyUrl}production/"
+    stage('Staging') {
+        node ("mesos-java8") {
+            def artServer = Artifactory.server('R2-artifactory')
+            def rtMaven = Artifactory.newMavenBuild()
+            stage('GitCheckout') { 
+                checkout scm
+            }
+            stage('Build') {
+                rtMaven.resolver server: artServer, releaseRepo: 'libs-release', snapshotRepo: 'libs-snapshot'
+                rtMaven.deployer.artifactDeploymentPatterns.addInclude("target/*.jar")
+                rtMaven.deployer.deployArtifacts = true
+                rtMaven.tool = 'M3'
+                def buildInfo = rtMaven.run pom: 'pom.xml', goals: 'clean install'
+                artServer.publishBuildInfo buildInfo
+                def v = version()
+                if (v) {
+                    echo "Building version ${v}"
+                }
+            }
+
+            stage('Unit Tests') {
+                rtMaven.run pom: 'pom.xml', goals: 'test-compile jacoco:prepare-agent surefire:test -B -e'
+                step([$class: 'JUnitResultArchiver', testResults: 'target/surefire-reports/TEST-*.xml'])
+            }
+
+            stage('Static Code Analysis') {
+                rtMaven.run pom: 'pom.xml', goals: 'checkstyle:checkstyle pmd:pmd findbugs:findbugs -B -e'
+                step([$class: 'CheckStylePublisher', pattern: 'target/checkstyle-result.xml'])
+                step([$class: 'FindBugsPublisher', pattern: 'target/findbugsXml.xml'])
+            }
+
+            stage('Documentation') {
+                rtMaven.run pom: 'pom.xml', goals: 'javadoc:javadoc -B -e'
+                step([$class: 'JavadocArchiver', javadocDir: 'target/site/apidocs', keepAll: false])
+            }
+
+
+            stage('Code Coverage') {
+                step([$class: 'JacocoPublisher', execPattern: 'target/coverage-reports/jacoco*.exec', exclusionPattern: '**/Messages.class'])
+            }
+
+            stage('Archive Artifacts') {
+                step([$class: 'ArtifactArchiver', artifacts: 'target/*.jar', fingerprint: true])
+                junit '**/target/surefire-reports/TEST-*.xml'
+                archive 'target/*.jar'
+            }
+
+            stage("Deploy") {
+                echo "deploying to staging"
+                sleep 10
+                echo "finished deploy to staging"
+            }
+        }
+        def version() {
+          def matcher = readFile('pom.xml') =~ '<version>(.+)</version>'
+          matcher ? matcher[0][1] : null
+        }
+    }
+
+
+
+    stage('Production') {
+        node ("mesos-java8") {
+            stage('Get staging artifacts') { 
+                echo "Retrieve staging build from artifactory"
+                sleep 10
+                echo "Retrieved staging build from artifactory"
+            }
+           
+            stage("Deploy") {
+                echo "deploying to production"
+                sleep 10
+                echo "finished deploy to production"
+            }
         }
     }
 }
-def mvn(args) {
-    sh "${tool 'Maven 3.x'}/bin/mvn ${args}"
+catch (exc) {
+    echo "Caught: ${exc}"
+
+    String recipient = 'project-admin@ge.com'
+
+    mail subject: "${env.JOB_NAME} (${env.BUILD_NUMBER}) failed",
+            body: "It appears that ${env.BUILD_URL} is failing, somebody should do something about that",
+              to: recipient,
+         replyTo: recipient,
+            from: 'predix-cicd@build.ge.com'
 }
-
-def runTests(duration) {
-    node {
-        checkout scm
-        servers.withDeployment {id ->
-            mvn "-o -f sometests test -Durl=${jettyUrl}${id}/ -Dduration=${duration}"
-        }
-        junit '**/target/surefire-reports/TEST-*.xml'
-    }
-}
-
-
-
-
 
 
 
