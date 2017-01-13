@@ -53,10 +53,7 @@ try {
                 echo "finished deploy to dev"
             }
         }
-        def version() {
-          def matcher = readFile('pom.xml') =~ '<version>(.+)</version>'
-          matcher ? matcher[0][1] : null
-        }
+      
     }
 
     stage('Staging') {
@@ -112,10 +109,6 @@ try {
                 echo "finished deploy to staging"
             }
         }
-        def version() {
-          def matcher = readFile('pom.xml') =~ '<version>(.+)</version>'
-          matcher ? matcher[0][1] : null
-        }
     }
 
 
@@ -146,6 +139,12 @@ catch (exc) {
               to: recipient,
          replyTo: recipient,
             from: 'predix-cicd@build.ge.com'
+}
+
+
+def version() {
+  def matcher = readFile('pom.xml') =~ '<version>(.+)</version>'
+  matcher ? matcher[0][1] : null
 }
 
 
