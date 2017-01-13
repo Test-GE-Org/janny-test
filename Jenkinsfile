@@ -11,6 +11,10 @@ node ("mesos-java8") {
         rtMaven.tool = 'M3'
         def buildInfo = rtMaven.run pom: 'pom.xml', goals: 'clean install'
         artServer.publishBuildInfo buildInfo
+        def v = version()
+        if (v) {
+            echo "Building version ${v}"
+        }
     }
 
     stage('Unit Tests') {
@@ -46,3 +50,8 @@ node ("mesos-java8") {
         echo "finished deploy to production"
     }
 }
+def version() {
+  def matcher = readFile('pom.xml') =~ '<version>(.+)</version>'
+  matcher ? matcher[0][1] : null
+}
+
