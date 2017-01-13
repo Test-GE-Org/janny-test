@@ -9,7 +9,7 @@ try {
             rtMaven.tool = 'M3'
 
             stage('GitCheckout') { 
-                checkout scm: [branch: 'develop']
+                checkout scm: [$class: 'GitSCM' ,branch: 'develop']
             }
 
 
@@ -75,7 +75,7 @@ try {
             def artServer = Artifactory.server('R2-artifactory')
             def rtMaven = Artifactory.newMavenBuild()
             stage('GitCheckout') { 
-                checkout scm: [branch: 'master']
+                checkout scm: [$class: 'GitSCM' ,branch: 'master']
             }
           
 
