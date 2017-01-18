@@ -5,7 +5,7 @@ try
     node ("mesos-java8"){
         def artServer = Artifactory.server('R2-artifactory')
         def branchName = env.BRANCH_NAME
-
+        def shortCommit 
         def rtMaven = Artifactory.newMavenBuild()
         rtMaven.resolver server: artServer, releaseRepo: 'libs-release', snapshotRepo: 'libs-snapshot'
         rtMaven.deployer.artifactDeploymentPatterns.addInclude("target/*.jar")
@@ -21,11 +21,13 @@ try
             // Most typical, if you're not cloning into a sub directory
             gitCommit = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
             // short SHA, possibly better for chat notifications, etc.
-            def shortCommit = gitCommit.take(6)
+            shortCommit = gitCommit.take(6)
             echo shortCommit
 
             def buildInfo = rtMaven.run pom: 'pom.xml', goals: 'clean install'
             artServer.publishBuildInfo buildInfo
+            stash includes: 'target/*.jar', name: 'artifact'
+            stash includes: 'manifest.yml', name: 'manifest'
         }
 
         stage('Unit Tests') {
@@ -54,9 +56,33 @@ try
             archive 'target/*.jar'
         }
         stage("Deploy To Dev") {
-            echo "deploying to dev"
-            sleep 10
-            echo "finished deploy to dev"
+            pcdOutput = sh(returnStatus: true, script: 'pcd')
+            if(pcdOutput != 0)
+            {
+                echo "PCD tool is available"
+                api_url = "deployer-api-devops-dev.run.aws-usw02-pr.ice.predix.io"
+                domain_url = "run.aws-usw02-pr.ice.predix.io"
+                metastore_url = "metastore-devops-dev.run.aws-usw02-pr.ice.predix.io"
+                org ="predix-devops"
+                space = "dev"
+                user_name = "pd-stg-admin"
+                token_id = "i7GBivOW3zTyfzIhc6PAZHxL"
+
+
+                unstash 'artifact'
+                unstash 'manifest'
+                pom = readMavenPom file: 'pom.xml'
+                artifact_url = "*.jar"
+                manifest_url ="*.yml"
+                build_number = "${env.BUILD_NUMBER}"
+                app_id = "${pom.artifactId}"
+                version = "${pom.version}"
+                app_name = "${pom.artifactId}"
+                deploy("${api_url}","${domain_url}","${metastore_url}","${org}","${space}","${user_name}","${token_id}","${artifact_url}","${manifest_url}","${build_number}","${app_id}","${version}","${app_name}");
+            }
+            else{
+                echo "PCD tool not found"
+            }
         }
 
         if(branchName == "master"){
@@ -72,12 +98,45 @@ catch (exc) {
     echo "Caught: ${exc}"
 }
 
+def deploy( api_url,domain_url,metastore_url,org,space,user_name,token_id,artifact_url,manifest_url,build_number,app_id,version,app_name){
+        echo "Authenticating for deploy"
+        sh 'pcd deploy auth -a ${api_url} -d ${domain_url} -m${metastore_url} -o ${org} -s${space} -u ${user_name} -tid ${token_id}'
+        echo "Authentication done"
+        echo "Deploying the artifacts"
+        sh 'pcd deploy -ar ${artifact_url} -m ${manifest_url} -b ${build_number} -id ${app_id} -v ${version} -n ${app_name}' 
+        echo "Deployed the artifacts"
+}
+
 
 def promoteToStaging(){
         stage("Promote to stage") {
-            echo "deploying to stage"
-            sleep 10
-            echo "finished deploy to stage"
+            pcdOutput = sh(returnStatus: true, script: 'pcd')
+            if(pcdOutput == 0)
+            {
+                echo "PCD tool is available"
+                api_url = "deployer-api-devops-dev.run.aws-usw02-pr.ice.predix.io"
+                domain_url = "run.aws-usw02-pr.ice.predix.io"
+                metastore_url = "metastore-devops-dev.run.aws-usw02-pr.ice.predix.io"
+                org ="predix-devops"
+                space = "dev"
+                user_name = "pd-stg-admin"
+                token_id = "i7GBivOW3zTyfzIhc6PAZHxL"
+
+
+                unstash 'artifact'
+                unstash 'manifest'
+                pom = readMavenPom file: 'pom.xml'
+                artifact_url = "*.jar"
+                manifest_url ="*.yml"
+                build_number = "${env.BUILD_NUMBER}"
+                app_id = "${pom.artifactId}"
+                version = "${pom.version}"
+                app_name = "${pom.artifactId}"
+                deploy("${api_url}","${domain_url}","${metastore_url}","${org}","${space}","${user_name}","${token_id}","${artifact_url}","${manifest_url}","${build_number}","${app_id}","${version}","${app_name}");
+            }
+            else{
+                echo "PCD tool not found"
+            }
         }
         stage("Integration test") {
             echo "integration test"
@@ -100,9 +159,33 @@ def waitForApproval(){
 
 def promoteToProduction(){
      stage("Promote to production") {
-            echo "deploying to production"
-            sleep 10
-            echo "finished deploy to production"
+            pcdOutput = sh(returnStatus: true, script: 'pcd')
+            if(pcdOutput == 0)
+            {
+                echo "PCD tool is available"
+                api_url = "deployer-api-devops-dev.run.aws-usw02-pr.ice.predix.io"
+                domain_url = "run.aws-usw02-pr.ice.predix.io"
+                metastore_url = "metastore-devops-dev.run.aws-usw02-pr.ice.predix.io"
+                org ="predix-devops"
+                space = "dev"
+                user_name = "pd-stg-admin"
+                token_id = "i7GBivOW3zTyfzIhc6PAZHxL"
+
+
+                unstash 'artifact'
+                unstash 'manifest'
+                pom = readMavenPom file: 'pom.xml'
+                artifact_url = "*.jar"
+                manifest_url ="*.yml"
+                build_number = "${env.BUILD_NUMBER}"
+                app_id = "${pom.artifactId}"
+                version = "${pom.version}"
+                app_name = "${pom.artifactId}"
+                deploy("${api_url}","${domain_url}","${metastore_url}","${org}","${space}","${user_name}","${token_id}","${artifact_url}","${manifest_url}","${build_number}","${app_id}","${version}","${app_name}");
+            }
+            else{
+                echo "PCD tool not found"
+            }
         }
         stage("Acceptance test") {
             echo "Acceptance test"
@@ -110,6 +193,7 @@ def promoteToProduction(){
             echo "Acceptance test"
         }
 }
+
 
 
 
