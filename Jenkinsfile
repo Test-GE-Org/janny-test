@@ -111,6 +111,13 @@ def promoteToStaging(){
             echo "Compliance test"
         }
 }
+def waitForApproval(){
+     stage("Ready to go production?") {
+            echo "Wait for input"
+            sleep 10
+            echo "input recieved"
+        }
+}
 
 def promoteToProduction(){
      stage("Promote to production") {
