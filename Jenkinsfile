@@ -22,10 +22,12 @@ try
             // short SHA, possibly better for chat notifications, etc.
             shortCommit = gitCommit.take(6)
 
+            echo "${shortCommit}"
+
             rtMaven.run pom: 'pom.xml', goals: '-B versions:set -DgenerateBackupPoms=false -DnewVersion=${shortCommit}'      
             sh 'git add .'
             sh "git commit -m 'Raise version'"
-            sh "git tag v${shortCommit}"
+            sh "git tag ${shortCommit}"
         }
 
         stage('Build') {
