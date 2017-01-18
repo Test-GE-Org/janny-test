@@ -22,19 +22,19 @@ try
             checkout scm
         }
 
-        stage('Set Version') {
+        // stage('Set Version') {
 
-            echo "${shortCommit}"
+        //     echo "${shortCommit}"
 
-            rtMaven.run pom: 'pom.xml', goals: '-B versions:set -DgenerateBackupPoms=false -DnewVersion='+shortCommit
+        //     rtMaven.run pom: 'pom.xml', goals: '-B versions:set -DgenerateBackupPoms=false -DnewVersion='+shortCommit
 
-            withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: '7197111a-627c-48b5-85e6-7e21e968ac0b', usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD']]) {                     
-                    sh 'git add .'
-                    sh "git commit -m 'Raise version'"
-                    sh "git tag ${shortCommit}"
-            }
+        //     withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: '7197111a-627c-48b5-85e6-7e21e968ac0b', usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD']]) {                     
+        //             sh 'git add .'
+        //             sh "git commit -m 'Raise version'"
+        //             sh "git tag ${shortCommit}"
+        //     }
 
-        }
+        // }
 
         stage('Build') {
             def buildInfo = rtMaven.run pom: 'pom.xml', goals: 'clean install'
