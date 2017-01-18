@@ -2,7 +2,7 @@
 
 try 
 {
-    node {
+    node ("mesos-java8"){
         def artServer = Artifactory.server('R2-artifactory')
         def branchName = env.BRANCH_NAME
 
@@ -16,20 +16,6 @@ try
             echo branchName
             checkout scm
         }
-
-        // stage('Set Version') {
-
-        //     echo "${shortCommit}"
-
-        //     rtMaven.run pom: 'pom.xml', goals: '-B versions:set -DgenerateBackupPoms=false -DnewVersion='+shortCommit
-
-        //     withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: '7197111a-627c-48b5-85e6-7e21e968ac0b', usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD']]) {                     
-        //             sh 'git add .'
-        //             sh "git commit -m 'Raise version'"
-        //             sh "git tag ${shortCommit}"
-        //     }
-
-        // }
 
         stage('Build') {
             // Most typical, if you're not cloning into a sub directory
@@ -84,14 +70,6 @@ try
 }
 catch (exc) {
     echo "Caught: ${exc}"
-
-    String recipient = 'project-admin@ge.com'
-
-    /*mail subject: "${env.JOB_NAME} (${env.BUILD_NUMBER}) failed",
-            body: "It appears that ${env.BUILD_URL} is failing, somebody should do something about that",
-              to: recipient,
-         replyTo: recipient,
-            from: 'predix-cicd@build.ge.com'*/
 }
 
 
