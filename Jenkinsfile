@@ -5,11 +5,7 @@ try
     node {
         def artServer = Artifactory.server('R2-artifactory')
         def branchName = env.BRANCH_NAME
-        // Most typical, if you're not cloning into a sub directory
-        gitCommit = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
-        // short SHA, possibly better for chat notifications, etc.
-        def shortCommit = gitCommit.take(6)
-
+ 
         def rtMaven = Artifactory.newMavenBuild()
         rtMaven.resolver server: artServer, releaseRepo: 'libs-release', snapshotRepo: 'libs-snapshot'
         rtMaven.deployer.artifactDeploymentPatterns.addInclude("target/*.jar")
@@ -21,6 +17,11 @@ try
         }
 
         stage('Set Version') {
+            // Most typical, if you're not cloning into a sub directory
+            gitCommit = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
+            // short SHA, possibly better for chat notifications, etc.
+            shortCommit = gitCommit.take(6)
+
             rtMaven.run pom: 'pom.xml', goals: '-B versions:set -DgenerateBackupPoms=false -DnewVersion=${shortCommit}'      
             sh 'git add .'
             sh "git commit -m 'Raise version'"
