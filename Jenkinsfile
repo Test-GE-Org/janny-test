@@ -78,7 +78,7 @@ try
                 app_id = "${pom.artifactId}"
                 version = "${pom.version}"
                 app_name = "${pom.artifactId}"
-                deploy(${api_url},${domain_url},${metastore_url},${org,space},${user_name},${token_id},${artifact_url},${manifest_url},${build_number},${app_id},${version},${app_name});
+                deploy(${api_url},${domain_url},${metastore_url},${org},${space},${user_name},${token_id},${artifact_url},${manifest_url},${build_number},${app_id},${version},${app_name});
             }
             else{
                 echo "PCD tool not found"
@@ -132,7 +132,7 @@ def promoteToStaging(){
                 app_id = "${pom.artifactId}"
                 version = "${pom.version}"
                 app_name = "${pom.artifactId}"
-                deploy(${api_url},${domain_url},${metastore_url},${org,space},${user_name},${token_id},${artifact_url},${manifest_url},${build_number},${app_id},${version},${app_name});
+                deploy(${api_url},${domain_url},${metastore_url},${org},${space},${user_name},${token_id},${artifact_url},${manifest_url},${build_number},${app_id},${version},${app_name});
             }
             else{
                 echo "PCD tool not found"
@@ -181,7 +181,7 @@ def promoteToProduction(){
                 app_id = "${pom.artifactId}"
                 version = "${pom.version}"
                 app_name = "${pom.artifactId}"
-                deploy(${api_url},${domain_url},${metastore_url},${org,space},${user_name},${token_id},${artifact_url},${manifest_url},${build_number},${app_id},${version},${app_name});
+                deploy(${api_url},${domain_url},${metastore_url},${org},${space},${user_name},${token_id},${artifact_url},${manifest_url},${build_number},${app_id},${version},${app_name});
             }
             else{
                 echo "PCD tool not found"
