@@ -57,7 +57,7 @@ try
         }
         stage("Deploy To Dev") {
             pcdOutput = sh(returnStatus: true, script: 'pcd')
-            if(pcdOutput == 0)
+            if(pcdOutput != 0)
             {
                 echo "PCD tool is available"
                 api_url = "deployer-api-devops-dev.run.aws-usw02-pr.ice.predix.io"
