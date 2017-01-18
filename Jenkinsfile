@@ -24,7 +24,7 @@ try
 
             echo "${shortCommit}"
 
-            rtMaven.run pom: 'pom.xml', goals: '-B versions:set -DgenerateBackupPoms=false -DnewVersion=${shortCommit}'      
+            rtMaven.run pom: 'pom.xml', goals: '-B versions:set -DgenerateBackupPoms=false -DnewVersion='+shortCommit
             sh 'git add .'
             sh "git commit -m 'Raise version'"
             sh "git tag ${shortCommit}"
