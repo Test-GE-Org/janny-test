@@ -2,7 +2,7 @@
 
 try 
 {
-    node ("mesos-java8") {
+    node {
         def artServer = Artifactory.server('R2-artifactory')
         def branchName = env.BRANCH_NAME
         // Most typical, if you're not cloning into a sub directory
