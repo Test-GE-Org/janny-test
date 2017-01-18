@@ -5,7 +5,11 @@ try
     node {
         def artServer = Artifactory.server('R2-artifactory')
         def branchName = env.BRANCH_NAME
- 
+         // Most typical, if you're not cloning into a sub directory
+        gitCommit = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
+        // short SHA, possibly better for chat notifications, etc.
+        def shortCommit = gitCommit.take(6)
+
         def rtMaven = Artifactory.newMavenBuild()
         rtMaven.resolver server: artServer, releaseRepo: 'libs-release', snapshotRepo: 'libs-snapshot'
         rtMaven.deployer.artifactDeploymentPatterns.addInclude("target/*.jar")
@@ -13,21 +17,23 @@ try
         rtMaven.tool = 'M3'
 
         stage('GitCheckout') { 
-            checkout scm: [$class: 'GitSCM' ,branch: '  ']
+            echo branchName
+            echo shortCommit
+            checkout scm
         }
 
         stage('Set Version') {
-            // Most typical, if you're not cloning into a sub directory
-            gitCommit = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
-            // short SHA, possibly better for chat notifications, etc.
-            shortCommit = gitCommit.take(6)
 
             echo "${shortCommit}"
 
             rtMaven.run pom: 'pom.xml', goals: '-B versions:set -DgenerateBackupPoms=false -DnewVersion='+shortCommit
-            sh 'git add .'
-            sh "git commit -m 'Raise version'"
-            sh "git tag ${shortCommit}"
+
+            withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: '7197111a-627c-48b5-85e6-7e21e968ac0b', usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD']]) {                     
+                    sh 'git add .'
+                    sh "git commit -m 'Raise version'"
+                    sh "git tag ${shortCommit}"
+            }
+
         }
 
         stage('Build') {
