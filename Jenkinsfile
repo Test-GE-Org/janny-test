@@ -56,8 +56,8 @@ try
             archive 'target/*.jar'
         }
         stage("Deploy To Dev") {
-            pcdOutput = sh(returnStdout: true, script: 'pcd').trim()
-            if(pcdOutput.contains("Client tool for Predix Continuous Delivery"))
+            pcdOutput = sh(returnStatus: true, script: 'pcd')
+            if(pcdOutput == 0)
             {
                 echo "PCD tool is available"
                 api_url = "deployer-api-devops-dev.run.aws-usw02-pr.ice.predix.io"
