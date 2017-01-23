@@ -56,6 +56,9 @@ try
             junit '**/target/surefire-reports/TEST-*.xml'
             archive 'target/*.jar'
         }
+
+    }
+    node ("mesos-pcd"){
         stage("Deploy To Dev") {
             pcdOutput = sh(returnStatus: true, script: 'pcd')
             if(pcdOutput != 0)
@@ -85,14 +88,15 @@ try
                 echo "PCD tool not found"
             }
         }
-
-        if(branchName == "master"){
-            promoteToStaging();
-            waitForApproval();
-            promoteToProduction();
-        }
-
     }
+
+    if(branchName == "master"){
+        promoteToStaging();
+        waitForApproval();
+        promoteToProduction();
+    }
+
+    
   
 }
 catch (exc) {
@@ -110,6 +114,7 @@ def deploy( api_url,domain_url,metastore_url,org,space,user_name,token_id,artifa
 
 
 def promoteToStaging(){
+    node ("mesos-pcd"){
         stage("Promote to stage") {
             pcdOutput = sh(returnStatus: true, script: 'pcd')
             if(pcdOutput == 0)
@@ -139,6 +144,9 @@ def promoteToStaging(){
                 echo "PCD tool not found"
             }
         }
+    }
+
+    node ("mesos-java8"){
         stage("Integration test") {
             echo "integration test"
             sleep 10
@@ -149,17 +157,21 @@ def promoteToStaging(){
             sleep 10
             echo "Compliance test"
         }
+    }
 }
 def waitForApproval(){
-     stage("Ready to go production?") {
+    node ("mesos-pcd"){
+        stage("Ready to go production?") {
             echo "Wait for input"
             sleep 10
             echo "input recieved"
         }
+    }
 }
 
 def promoteToProduction(){
-     stage("Promote to production") {
+    node ("mesos-pcd"){
+        stage("Promote to production") {
             pcdOutput = sh(returnStatus: true, script: 'pcd')
             if(pcdOutput == 0)
             {
@@ -188,11 +200,14 @@ def promoteToProduction(){
                 echo "PCD tool not found"
             }
         }
+    }
+    node ("mesos-java8"){
         stage("Acceptance test") {
             echo "Acceptance test"
             sleep 10
             echo "Acceptance test"
         }
+    }
 }
 
 
