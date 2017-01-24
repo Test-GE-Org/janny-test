@@ -61,23 +61,23 @@ try
     node ("mesos-pcd"){
         stage("Deploy To Dev") {
             pcdOutput = sh(returnStatus: true, script: 'pcd')
-            if(pcdOutput != 0)
+            if(pcdOutput == 0)
             {
                 echo "PCD tool is available"
-                api_url = "deployer-api-devops-dev.run.aws-usw02-pr.ice.predix.io"
-                domain_url = "run.aws-usw02-pr.ice.predix.io"
-                metastore_url = "metastore-devops-dev.run.aws-usw02-pr.ice.predix.io"
-                org ="predix-devops"
-                space = "dev"
-                user_name = "pd-stg-admin"
-                token_id = "i7GBivOW3zTyfzIhc6PAZHxL"
+                api_url = "<deployer_api_url_goes_here>"
+                domain_url = "<domain_url_goes_here>"
+                metastore_url = "<metastore_url_goes_here>"
+                org ="<org_goes_here>"
+                space = "<space_goes_here>"
+                user_name = "<User_id_goes_here>"
+                token_id = "<token_goes_here>"
 
 
                 unstash 'artifact'
                 unstash 'manifest'
                 pom = readMavenPom file: 'pom.xml'
-                artifact_url = "*.jar"
-                manifest_url ="*.yml"
+                artifact_url = "<artifact_url_goes_here>"
+                manifest_url ="<manifest_url_goes_here>"
                 build_number = "${env.BUILD_NUMBER}"
                 app_id = "${pom.artifactId}"
                 version = "${pom.version}"
@@ -121,20 +121,20 @@ def promoteToStaging(){
             if(pcdOutput == 0)
             {
                 echo "PCD tool is available"
-                api_url = "deployer-api-devops-dev.run.aws-usw02-pr.ice.predix.io"
-                domain_url = "run.aws-usw02-pr.ice.predix.io"
-                metastore_url = "metastore-devops-dev.run.aws-usw02-pr.ice.predix.io"
-                org ="predix-devops"
-                space = "dev"
-                user_name = "pd-stg-admin"
-                token_id = "i7GBivOW3zTyfzIhc6PAZHxL"
+                api_url = "<deployer_api_url_goes_here>"
+                domain_url = "<domain_url_goes_here>"
+                metastore_url = "<metastore_url_goes_here>"
+                org ="<org_goes_here>"
+                space = "<space_goes_here>"
+                user_name = "<User_id_goes_here>"
+                token_id = "<token_goes_here>"
 
 
                 unstash 'artifact'
                 unstash 'manifest'
                 pom = readMavenPom file: 'pom.xml'
-                artifact_url = "*.jar"
-                manifest_url ="*.yml"
+                artifact_url = "<artifact_url_goes_here>"
+                manifest_url ="<manifest_url_goes_here>"
                 build_number = "${env.BUILD_NUMBER}"
                 app_id = "${pom.artifactId}"
                 version = "${pom.version}"
@@ -160,7 +160,7 @@ def promoteToStaging(){
         }
     }
 }
-def waitForApprovalStaging){
+def waitForApprovalStaging()){
     stage("Ready to go staging?") {
         timeout(time:1, unit:'DAYS') {
             input message:'Approve deployment to staging?', submitter: 'it-ops'
@@ -176,6 +176,7 @@ def waitForApprovalProduction(){
     }
 }
 
+
 def promoteToProduction(){
     node ("mesos-pcd"){
         stage("Promote to production") {
@@ -183,20 +184,20 @@ def promoteToProduction(){
             if(pcdOutput == 0)
             {
                 echo "PCD tool is available"
-                api_url = "deployer-api-devops-dev.run.aws-usw02-pr.ice.predix.io"
-                domain_url = "run.aws-usw02-pr.ice.predix.io"
-                metastore_url = "metastore-devops-dev.run.aws-usw02-pr.ice.predix.io"
-                org ="predix-devops"
-                space = "dev"
-                user_name = "pd-stg-admin"
-                token_id = "i7GBivOW3zTyfzIhc6PAZHxL"
+                api_url = "<deployer_api_url_goes_here>"
+                domain_url = "<domain_url_goes_here>"
+                metastore_url = "<metastore_url_goes_here>"
+                org ="<org_goes_here>"
+                space = "<space_goes_here>"
+                user_name = "<User_id_goes_here>"
+                token_id = "<token_goes_here>"
 
 
                 unstash 'artifact'
                 unstash 'manifest'
                 pom = readMavenPom file: 'pom.xml'
-                artifact_url = "*.jar"
-                manifest_url ="*.yml"
+                artifact_url = "<artifact_url_goes_here>"
+                manifest_url ="<manifest_url_goes_here>"
                 build_number = "${env.BUILD_NUMBER}"
                 app_id = "${pom.artifactId}"
                 version = "${pom.version}"
@@ -216,7 +217,5 @@ def promoteToProduction(){
         }
     }
 }
-
-
 
 
