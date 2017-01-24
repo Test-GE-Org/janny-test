@@ -29,6 +29,7 @@ try
             artServer.publishBuildInfo buildInfo
             stash includes: 'target/*.jar', name: 'artifact'
             stash includes: 'manifest.yml', name: 'manifest'
+            stash includes: 'pom.xml', name:'pom'
         }
 
         stage('Unit Tests') {
@@ -75,6 +76,7 @@ try
 
                 unstash 'artifact'
                 unstash 'manifest'
+                unstash 'pom'
                 pom = readMavenPom file: 'pom.xml'
                 artifact_url = "<artifact_url_goes_here>"
                 manifest_url ="<manifest_url_goes_here>"
@@ -132,6 +134,7 @@ def promoteToStaging(){
 
                 unstash 'artifact'
                 unstash 'manifest'
+                unstash 'pom'
                 pom = readMavenPom file: 'pom.xml'
                 artifact_url = "<artifact_url_goes_here>"
                 manifest_url ="<manifest_url_goes_here>"
@@ -195,6 +198,7 @@ def promoteToProduction(){
 
                 unstash 'artifact'
                 unstash 'manifest'
+                unstash 'pom'
                 pom = readMavenPom file: 'pom.xml'
                 artifact_url = "<artifact_url_goes_here>"
                 manifest_url ="<manifest_url_goes_here>"
