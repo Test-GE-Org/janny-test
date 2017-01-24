@@ -160,7 +160,7 @@ def promoteToStaging(){
         }
     }
 }
-def waitForApprovalStaging()){
+def waitForApprovalStaging(){
     stage("Ready to go staging?") {
         timeout(time:1, unit:'DAYS') {
             input message:'Approve deployment to staging?', submitter: 'it-ops'
