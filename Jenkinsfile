@@ -58,7 +58,7 @@ try
         }
 
     }
-    node ("mesos-java8"){
+    node ("mesos-pcd"){
         stage("Deploy To Dev") {
             pcdOutput = sh(returnStatus: true, script: 'pcd')
             if(pcdOutput != 0)
@@ -114,7 +114,7 @@ def deploy( api_url,domain_url,metastore_url,org,space,user_name,token_id,artifa
 
 
 def promoteToStaging(){
-    node ("mesos-java8"){
+    node ("mesos-pcd"){
         stage("Promote to stage") {
             pcdOutput = sh(returnStatus: true, script: 'pcd')
             if(pcdOutput == 0)
@@ -170,7 +170,7 @@ def waitForApproval(){
 }
 
 def promoteToProduction(){
-    node ("mesos-java8"){
+    node ("mesos-pcd"){
         stage("Promote to production") {
             pcdOutput = sh(returnStatus: true, script: 'pcd')
             if(pcdOutput == 0)
