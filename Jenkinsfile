@@ -91,8 +91,9 @@ try
     }
 
     if(branchName == "master"){
+        waitForApprovalStaging();
         promoteToStaging();
-        waitForApproval();
+        waitForApprovalProduction();
         promoteToProduction();
     }
 
@@ -159,12 +160,18 @@ def promoteToStaging(){
         }
     }
 }
-def waitForApproval(){
-    node ("mesos-pcd"){
-        stage("Ready to go production?") {
-            echo "Wait for input"
-            sleep 10
-            echo "input recieved"
+def waitForApprovalStaging){
+    stage("Ready to go staging?") {
+        timeout(time:1, unit:'DAYS') {
+            input message:'Approve deployment to staging?', submitter: 'it-ops'
+        }
+    }
+}
+
+def waitForApprovalProduction(){
+    stage("Ready to go production?") {
+        timeout(time:5, unit:'DAYS') {
+            input message:'Approve deployment to production?', submitter: 'it-ops'
         }
     }
 }
