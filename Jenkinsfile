@@ -15,8 +15,15 @@ try
 
         stage('GitCheckout') { 
             echo branchName
+            echo "${branchName}"
+            echo "master".equals(branchName)
+            echo "master".equals("${branchName}")
             checkout scm
         }
+
+        echo "${branchName}"
+        echo "master".equals(branchName)
+        echo "master".equals("${branchName}")
 
         stage('Build') {
             // Most typical, if you're not cloning into a sub directory
