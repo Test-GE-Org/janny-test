@@ -91,7 +91,10 @@ try
             }
         }
     }
-
+    
+    echo "${branchName}"
+    echo "master".equals(branchName)
+    echo "master".equals("${branchName}")
     if("master".equals(branchName)){
         waitForApprovalStaging();
         promoteToStaging();
