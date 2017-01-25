@@ -111,7 +111,7 @@ void deploy(String api_url,String domain_url,String metastore_url,String org,Str
         sh "pcd deploy auth -a '${api_url}' -d '${domain_url}' -m '${metastore_url}' -o '${org}' -s '${space}' -u '${user_name}' -tid '${token_id}'"
         echo "Authentication done"
         echo "Deploying the artifacts"
-        sh "pcd deploy -ar ${artifact_url} -m ${manifest_url} -b ${build_number} -id ${app_id} -v ${version} -n ${app_name}"
+        sh "pcd deploy -ar '${artifact_url}' -m '${manifest_url}' -b '${build_number}' -id '${app_id}' -v '${version}' -n '${app_name}'"
         echo "Deployed the artifacts"
 }
 
