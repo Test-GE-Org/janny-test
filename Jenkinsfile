@@ -107,7 +107,8 @@ catch (exc) {
 }
 
 void deploy(String api_url,String domain_url,String metastore_url,String org,String space,String user_name,String token_id,String artifact_url,String manifest_url,String build_number,String app_id,String version,String app_name){
-        echo "Authenticating for deploy"
+        echo "Authenticating for deploy"+api_url
+        echo "Authenticating for deploy another ${api_url}"
         sh "pcd deploy auth -a ${api_url} -d ${domain_url} -m${metastore_url} -o ${org} -s${space} -u ${user_name} -tid ${token_id}"
         echo "Authentication done"
         echo "Deploying the artifacts"
