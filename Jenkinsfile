@@ -15,19 +15,16 @@ try
 
         stage('GitCheckout') { 
             echo branchName
-            if("master".equals(branchName)){
+           
+            checkout scm
+        }
+
+        if("master".equals(branchName)){
                 echo "Equal is true"
             }
             if("master".equals("${branchName}")){
                 echo "Another Equal is true"
             }
-            checkout scm
-        }
-
-        echo "${branchName}"
-        echo "master".equals(branchName)
-        echo "master".equals("${branchName}")
-
         stage('Build') {
             // Most typical, if you're not cloning into a sub directory
             gitCommit = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
