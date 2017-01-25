@@ -2,7 +2,7 @@
 
 try 
 {
-    node ("mesos-java8"){
+    node ("predixci-jdk-1.8"){
         def artServer = Artifactory.server('R2-artifactory')
         def branchName = env.BRANCH_NAME
         def shortCommit 
@@ -59,7 +59,7 @@ try
         }
 
     }
-    node ("mesos-pcd"){
+    node ("predixci-pcd"){
         stage("Deploy To Dev") {
             pcdOutput = sh(returnStatus: true, script: 'pcd')
             if(pcdOutput == 0)
@@ -92,7 +92,7 @@ try
         }
     }
 
-    if(branchName == "master"){
+    if("master".equals(branchName)){
         waitForApprovalStaging();
         promoteToStaging();
         waitForApprovalProduction();
@@ -107,7 +107,6 @@ catch (exc) {
 }
 
 void deploy(String api_url,String domain_url,String metastore_url,String org,String space,String user_name,String token_id,String artifact_url,String manifest_url,String build_number,String app_id,String version,String app_name){
-        echo "Authenticating for deploy"+api_url
         echo "Authenticating for deploy another ${api_url}"
         sh "pcd deploy auth -a ${api_url} -d ${domain_url} -m${metastore_url} -o ${org} -s${space} -u ${user_name} -tid ${token_id}"
         echo "Authentication done"
@@ -118,7 +117,7 @@ void deploy(String api_url,String domain_url,String metastore_url,String org,Str
 
 
 def promoteToStaging(){
-    node ("mesos-pcd"){
+    node ("predixci-pcd"){
         stage("Promote to stage") {
             pcdOutput = sh(returnStatus: true, script: 'pcd')
             if(pcdOutput == 0)
@@ -131,7 +130,6 @@ def promoteToStaging(){
                 space = "<space_goes_here>"
                 user_name = "<User_id_goes_here>"
                 token_id = "<token_goes_here>"
-
 
                 unstash 'artifact'
                 unstash 'manifest'
@@ -151,7 +149,7 @@ def promoteToStaging(){
         }
     }
 
-    node ("mesos-java8"){
+    node ("predixci-jdk-1.8"){
         stage("Integration test") {
             echo "integration test"
             sleep 10
@@ -182,7 +180,7 @@ def waitForApprovalProduction(){
 
 
 def promoteToProduction(){
-    node ("mesos-pcd"){
+    node ("predixci-pcd"){
         stage("Promote to production") {
             pcdOutput = sh(returnStatus: true, script: 'pcd')
             if(pcdOutput == 0)
@@ -214,7 +212,7 @@ def promoteToProduction(){
             }
         }
     }
-    node ("mesos-java8"){
+    node ("predixci-jdk-1.8"){
         stage("Acceptance test") {
             echo "Acceptance test"
             sleep 10
