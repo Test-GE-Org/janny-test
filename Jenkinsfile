@@ -108,7 +108,7 @@ catch (exc) {
 
 void deploy(String api_url,String domain_url,String metastore_url,String org,String space,String user_name,String token_id,String artifact_url,String manifest_url,String build_number,String app_id,String version,String app_name){
         echo "Authenticating for deploy another ${api_url}"
-        sh "pcd deploy auth -a ${api_url} -d ${domain_url} -m${metastore_url} -o ${org} -s${space} -u ${user_name} -tid ${token_id}"
+        sh "pcd deploy auth -a '${api_url}' -d '${domain_url}' -m '${metastore_url}' -o '${org}' -s '${space}' -u '${user_name}' -tid '${token_id}'"
         echo "Authentication done"
         echo "Deploying the artifacts"
         sh "pcd deploy -ar ${artifact_url} -m ${manifest_url} -b ${build_number} -id ${app_id} -v ${version} -n ${app_name}"
@@ -141,7 +141,7 @@ def promoteToStaging(){
                 app_id = "${pom.artifactId}"
                 version = "${pom.version}"
                 app_name = "${pom.artifactId}"
-                deploy("${api_url}","${domain_url}","${metastore_url}","${org}","${space}","${user_name}","${token_id}","${artifact_url}","${manifest_url}","${build_number}","${app_id}","${version}","${app_name}");
+                deploy(api_url,domain_url,metastore_url,org,space,user_name,token_id,artifact_url,manifest_url,build_number,app_id,version,app_name);
             }
             else{
                 echo "PCD tool not found"
@@ -205,7 +205,7 @@ def promoteToProduction(){
                 app_id = "${pom.artifactId}"
                 version = "${pom.version}"
                 app_name = "${pom.artifactId}"
-                deploy("${api_url}","${domain_url}","${metastore_url}","${org}","${space}","${user_name}","${token_id}","${artifact_url}","${manifest_url}","${build_number}","${app_id}","${version}","${app_name}");
+                deploy(api_url,domain_url,metastore_url,org,space,user_name,token_id,artifact_url,manifest_url,build_number,app_id,version,app_name);
             }
             else{
                 echo "PCD tool not found"
