@@ -2,9 +2,9 @@
 
 try 
 {
+    def branchName = env.BRANCH_NAME
     node ("predixci-jdk-1.8"){
         def artServer = Artifactory.server('R2-artifactory')
-        def branchName = env.BRANCH_NAME
         def shortCommit 
         def rtMaven = Artifactory.newMavenBuild()
         rtMaven.resolver server: artServer, releaseRepo: 'libs-release', snapshotRepo: 'libs-snapshot'
@@ -15,16 +15,9 @@ try
 
         stage('GitCheckout') { 
             echo branchName
-           
             checkout scm
         }
 
-        if("master".equals(branchName)){
-                echo "Equal is true"
-            }
-            if("master".equals("${branchName}")){
-                echo "Another Equal is true"
-            }
         stage('Build') {
             // Most typical, if you're not cloning into a sub directory
             gitCommit = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
@@ -66,6 +59,7 @@ try
         }
 
     }
+       
     node ("predixci-pcd"){
         stage("Deploy To Dev") {
             pcdOutput = sh(returnStatus: true, script: 'pcd')
@@ -99,10 +93,8 @@ try
         }
     }
     
-    echo "${branchName}"
-    echo "master".equals(branchName)
-    echo "master".equals("${branchName}")
     if("master".equals(branchName)){
+        echo "Commit on master branch. Promoting to staging"
         waitForApprovalStaging();
         promoteToStaging();
         waitForApprovalProduction();
