@@ -2,7 +2,7 @@
 
 try 
 {
-    node ("mesos-java8"){
+    node ("predixci-jdk-1.8"){
         def artServer = Artifactory.server('R2-artifactory')
         def branchName = env.BRANCH_NAME
         def shortCommit 
@@ -29,6 +29,7 @@ try
             artServer.publishBuildInfo buildInfo
             stash includes: 'target/*.jar', name: 'artifact'
             stash includes: 'manifest.yml', name: 'manifest'
+            stash includes: 'pom.xml', name:'pom'
         }
 
         stage('Unit Tests') {
@@ -58,31 +59,32 @@ try
         }
 
     }
-    node ("mesos-pcd"){
+    node ("predixci-pcd"){
         stage("Deploy To Dev") {
             pcdOutput = sh(returnStatus: true, script: 'pcd')
-            if(pcdOutput != 0)
+            if(pcdOutput == 0)
             {
                 echo "PCD tool is available"
-                api_url = "deployer-api-devops-dev.run.aws-usw02-pr.ice.predix.io"
-                domain_url = "run.aws-usw02-pr.ice.predix.io"
-                metastore_url = "metastore-devops-dev.run.aws-usw02-pr.ice.predix.io"
-                org ="predix-devops"
-                space = "dev"
-                user_name = "pd-stg-admin"
-                token_id = "i7GBivOW3zTyfzIhc6PAZHxL"
+                api_url = "<deployer_api_url_goes_here>"
+                domain_url = "<domain_url_goes_here>"
+                metastore_url = "<metastore_url_goes_here>"
+                org ="<org_goes_here>"
+                space = "<space_goes_here>"
+                user_name = "<User_id_goes_here>"
+                token_id = "<token_goes_here>"
 
 
                 unstash 'artifact'
                 unstash 'manifest'
+                unstash 'pom'
                 pom = readMavenPom file: 'pom.xml'
-                artifact_url = "*.jar"
-                manifest_url ="*.yml"
+                artifact_url = "<artifact_url_goes_here>"
+                manifest_url ="<manifest_url_goes_here>"
                 build_number = "${env.BUILD_NUMBER}"
                 app_id = "${pom.artifactId}"
                 version = "${pom.version}"
                 app_name = "${pom.artifactId}"
-                deploy("${api_url}","${domain_url}","${metastore_url}","${org}","${space}","${user_name}","${token_id}","${artifact_url}","${manifest_url}","${build_number}","${app_id}","${version}","${app_name}");
+                deploy(api_url,domain_url,metastore_url,org,space,user_name,token_id,artifact_url,manifest_url,build_number,app_id,version,app_name);
             }
             else{
                 echo "PCD tool not found"
@@ -90,9 +92,10 @@ try
         }
     }
 
-    if(branchName == "master"){
+    if("master".equals(branchName)){
+        waitForApprovalStaging();
         promoteToStaging();
-        waitForApproval();
+        waitForApprovalProduction();
         promoteToProduction();
     }
 
@@ -103,42 +106,42 @@ catch (exc) {
     echo "Caught: ${exc}"
 }
 
-def deploy( api_url,domain_url,metastore_url,org,space,user_name,token_id,artifact_url,manifest_url,build_number,app_id,version,app_name){
-        echo "Authenticating for deploy"
-        sh 'pcd deploy auth -a ${api_url} -d ${domain_url} -m${metastore_url} -o ${org} -s${space} -u ${user_name} -tid ${token_id}'
+void deploy(String api_url,String domain_url,String metastore_url,String org,String space,String user_name,String token_id,String artifact_url,String manifest_url,String build_number,String app_id,String version,String app_name){
+        echo "Authenticating for deploy another ${api_url}"
+        sh "pcd deploy auth -a '${api_url}' -d '${domain_url}' -m '${metastore_url}' -o '${org}' -s '${space}' -u '${user_name}' -tid '${token_id}'"
         echo "Authentication done"
         echo "Deploying the artifacts"
-        sh 'pcd deploy -ar ${artifact_url} -m ${manifest_url} -b ${build_number} -id ${app_id} -v ${version} -n ${app_name}' 
+        sh "pcd deploy -ar ${artifact_url} -m ${manifest_url} -b ${build_number} -id ${app_id} -v ${version} -n ${app_name}"
         echo "Deployed the artifacts"
 }
 
 
 def promoteToStaging(){
-    node ("mesos-pcd"){
+    node ("predixci-pcd"){
         stage("Promote to stage") {
             pcdOutput = sh(returnStatus: true, script: 'pcd')
             if(pcdOutput == 0)
             {
                 echo "PCD tool is available"
-                api_url = "deployer-api-devops-dev.run.aws-usw02-pr.ice.predix.io"
-                domain_url = "run.aws-usw02-pr.ice.predix.io"
-                metastore_url = "metastore-devops-dev.run.aws-usw02-pr.ice.predix.io"
-                org ="predix-devops"
-                space = "dev"
-                user_name = "pd-stg-admin"
-                token_id = "i7GBivOW3zTyfzIhc6PAZHxL"
-
+                api_url = "<deployer_api_url_goes_here>"
+                domain_url = "<domain_url_goes_here>"
+                metastore_url = "<metastore_url_goes_here>"
+                org ="<org_goes_here>"
+                space = "<space_goes_here>"
+                user_name = "<User_id_goes_here>"
+                token_id = "<token_goes_here>"
 
                 unstash 'artifact'
                 unstash 'manifest'
+                unstash 'pom'
                 pom = readMavenPom file: 'pom.xml'
-                artifact_url = "*.jar"
-                manifest_url ="*.yml"
+                artifact_url = "<artifact_url_goes_here>"
+                manifest_url ="<manifest_url_goes_here>"
                 build_number = "${env.BUILD_NUMBER}"
                 app_id = "${pom.artifactId}"
                 version = "${pom.version}"
                 app_name = "${pom.artifactId}"
-                deploy("${api_url}","${domain_url}","${metastore_url}","${org}","${space}","${user_name}","${token_id}","${artifact_url}","${manifest_url}","${build_number}","${app_id}","${version}","${app_name}");
+                deploy(api_url,domain_url,metastore_url,org,space,user_name,token_id,artifact_url,manifest_url,build_number,app_id,version,app_name);
             }
             else{
                 echo "PCD tool not found"
@@ -146,7 +149,7 @@ def promoteToStaging(){
         }
     }
 
-    node ("mesos-java8"){
+    node ("predixci-jdk-1.8"){
         stage("Integration test") {
             echo "integration test"
             sleep 10
@@ -159,49 +162,57 @@ def promoteToStaging(){
         }
     }
 }
-def waitForApproval(){
-    node ("mesos-pcd"){
-        stage("Ready to go production?") {
-            echo "Wait for input"
-            sleep 10
-            echo "input recieved"
+def waitForApprovalStaging(){
+    stage("Ready to go staging?") {
+        timeout(time:1, unit:'DAYS') {
+            input message:'Approve deployment to staging?', submitter: 'it-ops'
         }
     }
 }
 
+def waitForApprovalProduction(){
+    stage("Ready to go production?") {
+        timeout(time:5, unit:'DAYS') {
+            input message:'Approve deployment to production?', submitter: 'it-ops'
+        }
+    }
+}
+
+
 def promoteToProduction(){
-    node ("mesos-pcd"){
+    node ("predixci-pcd"){
         stage("Promote to production") {
             pcdOutput = sh(returnStatus: true, script: 'pcd')
             if(pcdOutput == 0)
             {
                 echo "PCD tool is available"
-                api_url = "deployer-api-devops-dev.run.aws-usw02-pr.ice.predix.io"
-                domain_url = "run.aws-usw02-pr.ice.predix.io"
-                metastore_url = "metastore-devops-dev.run.aws-usw02-pr.ice.predix.io"
-                org ="predix-devops"
-                space = "dev"
-                user_name = "pd-stg-admin"
-                token_id = "i7GBivOW3zTyfzIhc6PAZHxL"
+                api_url = "<deployer_api_url_goes_here>"
+                domain_url = "<domain_url_goes_here>"
+                metastore_url = "<metastore_url_goes_here>"
+                org ="<org_goes_here>"
+                space = "<space_goes_here>"
+                user_name = "<User_id_goes_here>"
+                token_id = "<token_goes_here>"
 
 
                 unstash 'artifact'
                 unstash 'manifest'
+                unstash 'pom'
                 pom = readMavenPom file: 'pom.xml'
-                artifact_url = "*.jar"
-                manifest_url ="*.yml"
+                artifact_url = "<artifact_url_goes_here>"
+                manifest_url ="<manifest_url_goes_here>"
                 build_number = "${env.BUILD_NUMBER}"
                 app_id = "${pom.artifactId}"
                 version = "${pom.version}"
                 app_name = "${pom.artifactId}"
-                deploy("${api_url}","${domain_url}","${metastore_url}","${org}","${space}","${user_name}","${token_id}","${artifact_url}","${manifest_url}","${build_number}","${app_id}","${version}","${app_name}");
+                deploy(api_url,domain_url,metastore_url,org,space,user_name,token_id,artifact_url,manifest_url,build_number,app_id,version,app_name);
             }
             else{
                 echo "PCD tool not found"
             }
         }
     }
-    node ("mesos-java8"){
+    node ("predixci-jdk-1.8"){
         stage("Acceptance test") {
             echo "Acceptance test"
             sleep 10
@@ -209,7 +220,5 @@ def promoteToProduction(){
         }
     }
 }
-
-
 
 
