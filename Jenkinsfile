@@ -106,7 +106,7 @@ catch (exc) {
     echo "Caught: ${exc}"
 }
 
-def deploy( api_url,domain_url,metastore_url,org,space,user_name,token_id,artifact_url,manifest_url,build_number,app_id,version,app_name){
+void deploy(String api_url,String domain_url,String metastore_url,String org,String space,String user_name,String token_id,String artifact_url,String manifest_url,String build_number,String app_id,String version,String app_name){
         echo "Authenticating for deploy"
         sh "pcd deploy auth -a ${api_url} -d ${domain_url} -m${metastore_url} -o ${org} -s${space} -u ${user_name} -tid ${token_id}"
         echo "Authentication done"
