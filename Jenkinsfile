@@ -15,9 +15,12 @@ try
 
         stage('GitCheckout') { 
             echo branchName
-            echo "${branchName}"
-            echo "master".equals(branchName)
-            echo "master".equals("${branchName}")
+            if("master".equals(branchName)){
+                echo "Equal is true"
+            }
+            if("master".equals("${branchName}")){
+                echo "Another Equal is true"
+            }
             checkout scm
         }
 
