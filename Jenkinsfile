@@ -2,14 +2,7 @@
 
 def branchName = env.BRANCH_NAME
 def complianceEnabled = true;
-def artServer = Artifactory.server('R2-artifactory')
-def shortCommit 
-def rtMaven = Artifactory.newMavenBuild()
-rtMaven.resolver server: artServer, releaseRepo: 'libs-release', snapshotRepo: 'libs-snapshot'
-rtMaven.deployer server: artServer, releaseRepo: 'libs-release-local', snapshotRepo: 'libs-snapshot-local'
-rtMaven.deployer.artifactDeploymentPatterns.addInclude("target/*.jar")
-rtMaven.deployer.deployArtifacts = true
-rtMaven.tool = 'M3'
+
 
 try 
 {
@@ -17,12 +10,22 @@ try
 
     node ("predixci-jdk-1.8"){
 
+        def artServer = Artifactory.server('R2-artifactory')
+        def shortCommit 
+        def rtMaven = Artifactory.newMavenBuild()
+        rtMaven.resolver server: artServer, releaseRepo: 'libs-release', snapshotRepo: 'libs-snapshot'
+        rtMaven.deployer server: artServer, releaseRepo: 'libs-release-local', snapshotRepo: 'libs-snapshot-local'
+        rtMaven.deployer.artifactDeploymentPatterns.addInclude("target/*.jar")
+        rtMaven.deployer.deployArtifacts = true
+        rtMaven.tool = 'M3'
+
         stage('GitCheckout') { 
             echo branchName
             checkout scm
         }
 
         stage('Build') {
+
             // Most typical, if you're not cloning into a sub directory
             gitCommit = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
             // short SHA, possibly better for chat notifications, etc.
@@ -119,6 +122,16 @@ catch (exc) {
 
 def doWhiteSourceScan(){
     node ("predixci-whitesource"){
+        def artServer = Artifactory.server('R2-artifactory')
+        def shortCommit 
+        def rtMaven = Artifactory.newMavenBuild()
+        rtMaven.resolver server: artServer, releaseRepo: 'libs-release', snapshotRepo: 'libs-snapshot'
+        rtMaven.deployer server: artServer, releaseRepo: 'libs-release-local', snapshotRepo: 'libs-snapshot-local'
+        rtMaven.deployer.artifactDeploymentPatterns.addInclude("target/*.jar")
+        rtMaven.deployer.deployArtifacts = true
+        rtMaven.tool = 'M3'
+
+
         stage("White Source Compliance Scan"){
             checkout scm
             gitCommit = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
