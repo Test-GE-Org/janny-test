@@ -136,6 +136,9 @@ def doWhiteSourceScan(){
             app_name = "${pom.artifactId}"
             sh 'cp /var/local/*.config ./'
             sh "sed -ie 's/<project_name>/${app_name}/g' whitesource-fs-agent.config"
+            sh "cat whitesource-fs-agent.config"
+            sh "ls -ltr"
+            sh "ls -ltr target/"
             sh 'java -jar /var/local/whitesource-fs-agent-1.7.2.jar'
         }
     }   
