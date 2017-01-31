@@ -1,17 +1,19 @@
 #!/usr/bin/env groovy
 
+def branchName = env.BRANCH_NAME
+def complianceEnabled = true;
+def artServer = Artifactory.server('R2-artifactory')
+def shortCommit 
+def rtMaven = Artifactory.newMavenBuild()
+rtMaven.resolver server: artServer, releaseRepo: 'libs-release', snapshotRepo: 'libs-snapshot'
+rtMaven.deployer server: artServer, releaseRepo: 'libs-release-local', snapshotRepo: 'libs-snapshot-local'
+rtMaven.deployer.artifactDeploymentPatterns.addInclude("target/*.jar")
+rtMaven.deployer.deployArtifacts = true
+rtMaven.tool = 'M3'
+
 try 
 {
-    def branchName = env.BRANCH_NAME
-    def complianceEnabled = true;
-    def artServer = Artifactory.server('R2-artifactory')
-    def shortCommit 
-    def rtMaven = Artifactory.newMavenBuild()
-    rtMaven.resolver server: artServer, releaseRepo: 'libs-release', snapshotRepo: 'libs-snapshot'
-    rtMaven.deployer server: artServer, releaseRepo: 'libs-release-local', snapshotRepo: 'libs-snapshot-local'
-    rtMaven.deployer.artifactDeploymentPatterns.addInclude("target/*.jar")
-    rtMaven.deployer.deployArtifacts = true
-    rtMaven.tool = 'M3'
+   
 
     node ("predixci-jdk-1.8"){
 
