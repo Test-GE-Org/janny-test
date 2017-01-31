@@ -245,7 +245,6 @@ def promoteToProduction(){
 
 
 void deploy(String envVal,String org,String space,String user_name,String token_id,String artifact_url,String manifest_url,String build_number,String app_id,String version,String app_name){
-        echo "Authenticating for deploy another ${api_url}"
         sh "pcd deploy auth -env '${envVal}' -o '${org}' -s '${space}' -u '${user_name}' -tid '${token_id}'"
         echo "Authentication done"
         echo "Deploying the artifacts"
