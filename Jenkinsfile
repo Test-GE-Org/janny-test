@@ -248,7 +248,7 @@ void deploy(String envVal,String org,String space,String user_name,String token_
         sh "pcd deploy auth -env '${envVal}' -o '${org}' -s '${space}' -u '${user_name}' -tid '${token_id}'"
         echo "Authentication done"
         echo "Deploying the artifacts"
-        sh "pcd deploy -ar '${artifact_url}' -m '${manifest_url}' -b '${build_number}' -id '${app_id}' -v '${version}' -n '${app_name}'"
+        sh "pcd deploy -a '${artifact_url}' -m '${manifest_url}' -b '${build_number}' -id '${app_id}' -v '${version}' -n '${app_name}'"
         echo "Deployed the artifacts"
 }
 
