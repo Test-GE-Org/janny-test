@@ -1,9 +1,15 @@
 #!/usr/bin/env groovy
 
+def branchName = env.BRANCH_NAME
+def complianceEnabled = true;
+
+
 try 
 {
-    def branchName = env.BRANCH_NAME
+   
+
     node ("predixci-jdk-1.8"){
+
         def artServer = Artifactory.server('R2-artifactory')
         def shortCommit 
         def rtMaven = Artifactory.newMavenBuild()
@@ -19,6 +25,7 @@ try
         }
 
         stage('Build') {
+
             // Most typical, if you're not cloning into a sub directory
             gitCommit = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
             // short SHA, possibly better for chat notifications, etc.
@@ -57,18 +64,22 @@ try
             junit '**/target/surefire-reports/TEST-*.xml'
             archive 'target/*.jar'
         }
+      
 
     }
-       
+
+    if(complianceEnabled){
+            echo "Compliance Enabled. Triggering white source scanning."
+            doWhiteSourceScan();
+    }
+
     node ("predixci-pcd"){
         stage("Deploy To Dev") {
             pcdOutput = sh(returnStatus: true, script: 'pcd')
             if(pcdOutput == 0)
             {
                 echo "PCD tool is available"
-                api_url = "<deployer_api_url_goes_here>"
-                domain_url = "<domain_url_goes_here>"
-                metastore_url = "<metastore_url_goes_here>"
+                env_val = "cf1"
                 org ="<org_goes_here>"
                 space = "<space_goes_here>"
                 user_name = "<User_id_goes_here>"
@@ -85,7 +96,7 @@ try
                 app_id = "${pom.artifactId}"
                 version = "${pom.version}"
                 app_name = "${pom.artifactId}"
-                deploy(api_url,domain_url,metastore_url,org,space,user_name,token_id,artifact_url,manifest_url,build_number,app_id,version,app_name);
+                deploy(env_val,org,space,user_name,token_id,artifact_url,manifest_url,build_number,app_id,version,app_name);
             }
             else{
                 echo "PCD tool not found"
@@ -99,22 +110,35 @@ try
         promoteToStaging();
         waitForApprovalProduction();
         promoteToProduction();
-    }
-
-    
-  
+    } 
 }
 catch (exc) {
     echo "Caught: ${exc}"
 }
+def doWhiteSourceScan(){
+    node ("predixci-whitesource"){
+        def artServer = Artifactory.server('R2-artifactory')
+        def shortCommit 
+        def rtMaven = Artifactory.newMavenBuild()
+        rtMaven.resolver server: artServer, releaseRepo: 'libs-release', snapshotRepo: 'libs-snapshot'
+        rtMaven.deployer server: artServer, releaseRepo: 'libs-release-local', snapshotRepo: 'libs-snapshot-local'
+        rtMaven.deployer.artifactDeploymentPatterns.addInclude("target/*.jar")
+        rtMaven.deployer.deployArtifacts = true
+        rtMaven.tool = 'M3'
 
-void deploy(String api_url,String domain_url,String metastore_url,String org,String space,String user_name,String token_id,String artifact_url,String manifest_url,String build_number,String app_id,String version,String app_name){
-        echo "Authenticating for deploy another ${api_url}"
-        sh "pcd deploy auth -a '${api_url}' -d '${domain_url}' -m '${metastore_url}' -o '${org}' -s '${space}' -u '${user_name}' -tid '${token_id}'"
-        echo "Authentication done"
-        echo "Deploying the artifacts"
-        sh "pcd deploy -ar '${artifact_url}' -m '${manifest_url}' -b '${build_number}' -id '${app_id}' -v '${version}' -n '${app_name}'"
-        echo "Deployed the artifacts"
+
+        stage("White Source Compliance Scan"){
+            checkout scm
+            gitCommit = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
+            shortCommit = gitCommit.take(6)
+            def buildInfo = rtMaven.run pom: 'pom.xml', goals: 'clean install'
+            pom = readMavenPom file: 'pom.xml'
+            app_name = "${pom.artifactId}"
+            sh 'cp /var/local/*.config ./'
+            sh "sed -ie 's/<project_name>/${app_name}/g' whitesource-fs-agent.config"
+            sh 'java -jar /var/local/whitesource-fs-agent-1.7.2.jar -d target'
+        }
+    }   
 }
 
 
@@ -125,9 +149,7 @@ def promoteToStaging(){
             if(pcdOutput == 0)
             {
                 echo "PCD tool is available"
-                api_url = "<deployer_api_url_goes_here>"
-                domain_url = "<domain_url_goes_here>"
-                metastore_url = "<metastore_url_goes_here>"
+                env_val = "cf1"
                 org ="<org_goes_here>"
                 space = "<space_goes_here>"
                 user_name = "<User_id_goes_here>"
@@ -143,7 +165,7 @@ def promoteToStaging(){
                 app_id = "${pom.artifactId}"
                 version = "${pom.version}"
                 app_name = "${pom.artifactId}"
-                deploy(api_url,domain_url,metastore_url,org,space,user_name,token_id,artifact_url,manifest_url,build_number,app_id,version,app_name);
+                deploy(env_val,org,space,user_name,token_id,artifact_url,manifest_url,build_number,app_id,version,app_name);
             }
             else{
                 echo "PCD tool not found"
@@ -188,9 +210,7 @@ def promoteToProduction(){
             if(pcdOutput == 0)
             {
                 echo "PCD tool is available"
-                api_url = "<deployer_api_url_goes_here>"
-                domain_url = "<domain_url_goes_here>"
-                metastore_url = "<metastore_url_goes_here>"
+                env_val = "cf1"
                 org ="<org_goes_here>"
                 space = "<space_goes_here>"
                 user_name = "<User_id_goes_here>"
@@ -207,7 +227,7 @@ def promoteToProduction(){
                 app_id = "${pom.artifactId}"
                 version = "${pom.version}"
                 app_name = "${pom.artifactId}"
-                deploy(api_url,domain_url,metastore_url,org,space,user_name,token_id,artifact_url,manifest_url,build_number,app_id,version,app_name);
+                deploy(env_val,org,space,user_name,token_id,artifact_url,manifest_url,build_number,app_id,version,app_name);
             }
             else{
                 echo "PCD tool not found"
@@ -222,5 +242,16 @@ def promoteToProduction(){
         }
     }
 }
+
+
+void deploy(String envVal,String org,String space,String user_name,String token_id,String artifact_url,String manifest_url,String build_number,String app_id,String version,String app_name){
+        sh "pcd deploy auth -env '${envVal}' -o '${org}' -s '${space}' -u '${user_name}' -tid '${token_id}'"
+        echo "Authentication done"
+        echo "Deploying the artifacts"
+        sh "pcd deploy -a '${artifact_url}' -m '${manifest_url}' -b '${build_number}' -id '${app_id}' -v '${version}' -n '${app_name}'"
+        echo "Deployed the artifacts"
+}
+
+
 
 
