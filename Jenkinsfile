@@ -21,7 +21,6 @@ try
             echo branchName
             checkout scm
         }
-
         stage('Build') {
 
             // Most typical, if you're not cloning into a sub directory
