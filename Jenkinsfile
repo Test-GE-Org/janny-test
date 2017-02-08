@@ -75,7 +75,7 @@ try
         }
 
         stage('Archive Artifacts') {
-            step([$class: 'ArtifactArchiver', artifacts: '**/target/*.jar', fingerprint: true])
+            //step([$class: 'ArtifactArchiver', artifacts: '**/target/*.jar', fingerprint: true])
             archive '**/target/*.jar'
         }
       
