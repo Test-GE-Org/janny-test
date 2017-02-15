@@ -1,8 +1,6 @@
 #!/usr/bin/env groovy
-
 def branchName = env.BRANCH_NAME
 def complianceEnabled = false;
-
 try 
 {
    
