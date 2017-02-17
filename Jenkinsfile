@@ -143,12 +143,12 @@ def doWhiteSourceScan(){
             checkout scm
             gitCommit = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
             shortCommit = gitCommit.take(6)
-            def buildInfo = rtMaven.run pom: 'pom.xml', goals: 'clean install'
+            def buildInfo = rtMaven.run pom: 'pom.xml', goals: 'dependency:copy-dependencies'
             pom = readMavenPom file: 'pom.xml'
             app_name = "${pom.artifactId}"
             sh 'cp /var/local/*.config ./'
             sh "sed -ie 's/<project_name>/${app_name}/g' whitesource-fs-agent.config"
-            sh 'java -jar /var/local/whitesource-fs-agent-1.7.2.jar -d target'
+            sh 'java -jar /var/local/whitesource-fs-agent-1.7.2.jar -d target/dependencies'
         }
     }   
 }
