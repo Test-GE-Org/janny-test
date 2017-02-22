@@ -6,4 +6,5 @@ applications:
   host: cicd-demo-host
   # domain: guides.spring.io
   # path: build/libs/gs-rest-service-0.1.0.jar
-  path: target/gs-rest-service-0.1.0.jar
+  # path: target/gs-rest-service-0.1.0.jar
+  path: /root/.m2/repository/org/springframework/gs-rest-service/0.1.0/gs-rest-service-0.1.0.jar
