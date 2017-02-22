@@ -3,6 +3,6 @@ applications:
 - name: gs-rest-service
   memory: 256M
   instances: 1
-  host: rest-service
+  host: gs-rest-service-host
   # domain: guides.spring.io
   path: build/libs/gs-rest-service-0.1.0.jar
