@@ -78,6 +78,7 @@ try
         }
       
         stage('Deploy') {
+            unstash 'artifact'
             sh 'cf login -a https://api.system.aws-usw02-pr.ice.predix.io -u pd-stg-admin -p St@geD3liv3r -o predix-devops -s demo'
             echo "Finish cf login"
             sh 'cf push'
