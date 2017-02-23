@@ -7,6 +7,6 @@ applications:
   buildpack: https://github.com/cloudfoundry/java-buildpack.git#v3.7
   # domain: guides.spring.io
   # path: build/libs/gs-rest-service-0.1.0.jar
-  # path: target/gs-rest-service-0.1.0.jar
-  path: /root/.m2/repository/org/springframework/gs-rest-service/0.1.0/gs-rest-service-0.1.0.jar
+  path: target/gs-rest-service-0.1.0.jar
+  # path: /root/.m2/repository/org/springframework/gs-rest-service/0.1.0/gs-rest-service-0.1.0.jar
   # port: 8080
