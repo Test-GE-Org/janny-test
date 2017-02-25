@@ -130,11 +130,14 @@ try
         waitForApprovalProduction();
         promoteToProduction();
     } 
+*/
+
 }
 catch (exc) {
     echo "Caught: ${exc}"
 }
 
+/*
 def doWhiteSourceScan(){
     node ("predixci-whitesource"){
         def artServer = Artifactory.server('R2-artifactory')
