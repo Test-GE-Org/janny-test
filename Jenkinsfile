@@ -83,9 +83,10 @@ try
             echo "Finish cf login"
             sh 'cf push'
             echo "Finish cf push"
+            sh 'cf a'
         }
     }
-
+/*
     if(complianceEnabled){
             echo "Compliance Enabled. Triggering white source scanning."
             doWhiteSourceScan();
@@ -133,7 +134,7 @@ try
 catch (exc) {
     echo "Caught: ${exc}"
 }
-/*
+
 def doWhiteSourceScan(){
     node ("predixci-whitesource"){
         def artServer = Artifactory.server('R2-artifactory')
