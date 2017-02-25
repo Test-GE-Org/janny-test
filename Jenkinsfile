@@ -271,6 +271,5 @@ void deploy(String envVal,String org,String space,String user_name,String token_
         sh "pcd deploy -a '${artifact_url}' -m '${manifest_url}' -b '${build_number}' -id '${app_id}' -v '${version}' -n '${app_name}'"
         echo "Deployed the artifacts"
 }
-
 */
 
