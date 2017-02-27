@@ -81,7 +81,6 @@ try
             unstash 'artifact'
    //         sh 'cf login -a https://api.system.aws-usw02-pr.ice.predix.io -u pd-stg-admin -p St@geD3liv3r -o predix-devops -s demo'
             sh 'cf login -a https://api.system.aws-usw02-pr.ice.predix.io -u Shared.PredixDevOpsTraining@ge.com -p Cicd88@Demo -o predix-devops-runtime -s dev'
-            echo "Finish cf login"
             sh 'cf push'
             echo "Finish cf push"
             sh 'cf a'
