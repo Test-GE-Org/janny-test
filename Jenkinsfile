@@ -69,7 +69,6 @@ try
             }catch(Exception e){
                 echo "Code Coverage was not successful."
             }
-
         }
 
         stage('Archive Artifacts') {
