@@ -166,7 +166,6 @@ def doWhiteSourceScan(){
     }   
 }
 
-
 def promoteToStaging(){
     node ("predixci-pcd"){
         stage("Promote to stage") {
