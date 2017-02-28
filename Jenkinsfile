@@ -79,7 +79,9 @@ try
         stage('Deploy') {
             //unstash is necessary to use the artifact stored in 'Build' stage
             unstash 'artifact'
-            withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: '2ff06a29-9500-4251-bd7a-903f54eab497', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+            
+            // Do not change the credentialsId.  This is the credential to deploy to predix-devops-runtime on CF1
+            withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'be873552-8275-4d78-a3c3-1c75d4bfe38e', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
                sh 'echo uname=$USERNAME pwd=$PASSWORD'
                sh 'cf login -a https://api.system.aws-usw02-pr.ice.predix.io -u $USERNAME -p $PASSWORD -o predix-devops-runtime -s dev'
             }
