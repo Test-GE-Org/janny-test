@@ -228,7 +228,6 @@ def waitForApprovalProduction(){
     }
 }
 
-
 def promoteToProduction(){
     node ("predixci-pcd"){
         stage("Promote to production") {
