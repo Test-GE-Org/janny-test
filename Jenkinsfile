@@ -96,7 +96,6 @@ try
             doWhiteSourceScan();
     }
 
-
     node ("predixci-pcd"){
         stage("Deploy To Dev") {
             pcdOutput = sh(returnStatus: true, script: 'pcd')
