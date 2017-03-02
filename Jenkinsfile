@@ -108,7 +108,6 @@ try
                 user_name = "<User_id_goes_here>"
                 token_id = "<token_goes_here>"
 
-
                 unstash 'artifact'
                 unstash 'manifest'
                 unstash 'pom'
