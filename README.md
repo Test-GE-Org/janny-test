@@ -11,3 +11,6 @@ Click the branches tab. Click the 'trash bin' icon to the right of the branch yo
 
 ## Who will use this repo?
 This repo is available to all Predix CI/CD (Beta) customers. You can register to be a demo user at http://info.ci.build.ge.com/services/predix-cicd-beta/.
+
+## Any question or feedback?
+To submit your question or feedback, go to http://info.ci.build.ge.com/ and click 'Support | Predix CI/CD (Beta) | Ask a Question'.
