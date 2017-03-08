@@ -16,8 +16,9 @@ git push origin <new-branch-name>
 ## How to delete a branch from UI
 Click the branches tab. Click the 'trash bin' icon to the right of the branch you want to delete.
 
-## How to delete a branch from command line
-git 
+## How to delete a branch locally and then remotely from command line
+git branch -D <branch-name>
+git push origin :<branch-name>
 
 ## Who will use this repo?
 This repo is available to all Predix CI/CD (Beta) customers. You can register to be a demo user at http://info.ci.build.ge.com/services/predix-cicd-beta/.
