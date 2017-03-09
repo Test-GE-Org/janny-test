@@ -7,12 +7,12 @@ This repo is a sample project for you to try out the Predix CI/CD platform. You 
 http://info.ci.build.ge.com/services/predix-cicd-beta/
 
 ## How to create a branch and push change from command line using Demo Account Token
-1. git clone https://<demo-token>:x-oauth-basic@github.build.ge.com/predix-cicd-demo/gs-rest-service.git 
+1. git clone https://[demo-token]:x-oauth-basic@github.build.ge.com/predix-cicd-demo/gs-rest-service.git 
 2. git checkout -b [new-branch-name]
 3. make one change to any file [file-name]
 4. git add [file-name]
 5. git commit -m "modify file in new branch"
-6. git push origin <new-branch-name>
+6. git push origin [new-branch-name]
 
 ## How to delete a branch locally and then remotely from command line
 git branch -d [branch-name]
