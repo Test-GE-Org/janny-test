@@ -9,7 +9,7 @@ http://info.ci.build.ge.com/services/predix-cicd-beta/
 ## How to create a branch and push change from command line using Demo Account Token
 1. git clone https://<demo-token>:x-oauth-basic@github.build.ge.com/predix-cicd-demo/gs-rest-service.git 
 2. git checkout -b <new-branch-name>
-3. make one change to a <file-name>
+3. make one change to any file
 4. git add <file-name>
 5. git commit -m "modify file in new branch"
 6. git push origin <new-branch-name>
