@@ -6,19 +6,19 @@ This repo is a sample project for you to try out the Predix CI/CD platform. You 
 ## How to create a branch from UI
 To create a branch, click the down arrow on the Branch button. Type in the new branch name and hit enter.
 
-## How to create a branch, make some change, push change in new branch to github
-git checkout -b <new-branch-name>
-make one change to <file-name>
-git add <file-name>
-git commit -m "modify file in new branch"
-git push origin <new-branch-name>
+## How to create a branch and push change from command line
+1. git checkout -b <new-branch-name>
+2. make one change to <file-name>
+3. git add <file-name>
+4. git commit -m "modify file in new branch"
+5. git push origin <new-branch-name>
 
 ## How to delete a branch from UI
 Click the branches tab. Click the 'trash bin' icon to the right of the branch you want to delete.
 
 ## How to delete a branch locally and then remotely from command line
-git branch -D <branch-name>
-git push origin :<branch-name>
+1. git branch -D <branch-name>
+2. git push origin :<branch-name>
 
 ## Who will use this repo?
 This repo is available to all Predix CI/CD (Beta) customers. You can register to be a demo user at http://info.ci.build.ge.com/services/predix-cicd-beta/.
