@@ -15,8 +15,8 @@ http://info.ci.build.ge.com/services/predix-cicd-beta/
 6. git push --set-upstream origin [new-branch-name]
 
 ## How to delete a branch locally and then remotely from command line
-git branch -d [branch-name]
-git push origin :[branch-name]
+1. git branch -d [branch-name]
+2. git push origin :[branch-name]
 
 ## Who will use this repo?
 This repo is available to all Predix CI/CD (Beta) customers. 
