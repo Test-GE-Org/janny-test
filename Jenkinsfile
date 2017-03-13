@@ -92,8 +92,7 @@ try
         
         stage('TinFoil') {
             echo "before calling tinfoil"
-            sh 'COMMANDOUTPUT=`/usr/bin/curl --insecure -v https://tinfoil.ice.ge.com/api/v1/sites/ci-cd-demo/scans -X POST -d "site[name]=ci-cd-demo" -d "site[url]=https://cicd-demo-host.run.aws-usw02-pr.ice.predix.io/greeting" -H "Authorization:Token token=S9T/8ODFvFMurjxO9/6Fz0BE, access_key=/Hx9SNDwi8DxYwjcVrmzLANM"`'
-            sh 'echo "COMMANDOUTPUT is: $COMMANDOUTPUT"'
+            sh '/usr/bin/curl --insecure -v https://tinfoil.ice.ge.com/api/v1/sites/ci-cd-demo/scans -X POST -d "site[name]=ci-cd-demo" -d "site[url]=https://cicd-demo-host.run.aws-usw02-pr.ice.predix.io/greeting" -H "Authorization:Token token=S9T/8ODFvFMurjxO9/6Fz0BE, access_key=/Hx9SNDwi8DxYwjcVrmzLANM"'
         }
     }
 /*
