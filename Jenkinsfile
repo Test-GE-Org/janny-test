@@ -85,6 +85,7 @@ try
                sh 'echo uname=$USERNAME pwd=$PASSWORD'
                sh 'cf login -a https://api.system.aws-usw02-pr.ice.predix.io -u $USERNAME -p $PASSWORD -o predix-devops-runtime -s dev'
             }
+            
             sh 'cf push'
             sh 'cf a'
         }
