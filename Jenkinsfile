@@ -82,18 +82,18 @@ try
             
             // Do not change the credentialsId.  This is the credential to deploy to predix-devops-runtime on CF1
             withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: '2ff06a29-9500-4251-bd7a-903f54eab497', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
-               sh 'echo uname=$USERNAME pwd=$PASSWORD'
+               echo uname=$USERNAME pwd=$PASSWORD
                sh 'cf login -a https://api.system.aws-usw02-pr.ice.predix.io -u $USERNAME -p $PASSWORD -o predix-devops-runtime -s dev'
             }
             sh 'cf push'
-            sh 'echo "Finish cf push"'
+            echo "Finish cf push"
             sh 'cf a'
         }
         
         stage('TinFoil') {
-           sh 'echo before calling tinfoil'
+           echo before calling tinfoil
            sh '/usr/bin/curl --insecure -v https://tinfoil.ice.ge.com/api/v1/sites/ci-cd-demo/scans -X POST -d "site[name]=ci-cd-demo" -d "site[url]=https://cicd-demo-host.run.aws-usw02-pr.ice.predix.io/greeting" -H "Authorization:Token token=S9T/8ODFvFMurjxO9/6Fz0BE, access_key=/Hx9SNDwi8DxYwjcVrmzLANM"'
-           sh 'echo after calling tinfoil'
+           echo after calling tinfoil
         }
     }
 /*
