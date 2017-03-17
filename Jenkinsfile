@@ -40,6 +40,8 @@ try
                 echo "No manifest file to stash"
             }
             stash includes: 'pom.xml', name:'pom'
+            
+            sh 'cat ~/.m2/settings.xml'
         }
         
         stage('Unit Tests') {
