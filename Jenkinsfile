@@ -41,7 +41,6 @@ try
             }
             stash includes: 'pom.xml', name:'pom'
             
-            sh 'cat ~/.m2/settings.xml'
         }
         
         stage('Unit Tests') {
