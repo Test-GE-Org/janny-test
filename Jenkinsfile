@@ -24,6 +24,7 @@ try
             echo branchName
             checkout scm
         }
+/*
         stage('Build') {
 
             // Most typical, if you're not cloning into a sub directory
@@ -34,25 +35,27 @@ try
 
              def buildInfo = rtMaven.run pom: 'pom.xml', goals: '-B -DskipTests clean install'
             artServer.publishBuildInfo buildInfo
-            try{
-                stash includes: '**/target/*.jar', name: 'artifact'
-            }catch(Exception e){
-                echo "No Jar files to stash"
-            }
-            try{
-                stash includes: '**/manifest.yml', name: 'manifest'
-            }catch(Exception e){
-                echo "No manifest file to stash"
-            }
-            stash includes: 'pom.xml', name:'pom'
-            
-        }
+*/
+
+//            try{
+//                stash includes: '**/target/*.jar', name: 'artifact'
+//            }catch(Exception e){
+//                echo "No Jar files to stash"
+//            }
+//            try{
+//                stash includes: '**/manifest.yml', name: 'manifest'
+//            }catch(Exception e){
+//                echo "No manifest file to stash"
+//            }
+//            stash includes: 'pom.xml', name:'pom'
+//            
+//        }
         
-        stage('Unit Tests') {
-            //rtMaven.run pom: 'pom.xml', goals: 'test-compile jacoco:prepare-agent surefire:test -B -e'
-            rtMaven.run pom: 'pom.xml', goals: '-B clean test -Dmaven.test.failure.ignore'
-            step([$class: 'JUnitResultArchiver', testResults: '**/target/surefire-reports/TEST-*.xml'])
-        }
+ //       stage('Unit Tests') {
+//            //rtMaven.run pom: 'pom.xml', goals: 'test-compile jacoco:prepare-agent surefire:test -B -e'
+ //           rtMaven.run pom: 'pom.xml', goals: '-B clean test -Dmaven.test.failure.ignore'
+//            step([$class: 'JUnitResultArchiver', testResults: '**/target/surefire-reports/TEST-*.xml'])
+//        }
         
    //      stage('Static Code Analysis') {
    //         rtMaven.run pom: 'pom.xml', goals: 'checkstyle:checkstyle pmd:pmd findbugs:findbugs -B -e'
@@ -60,41 +63,25 @@ try
    //         step([$class: 'FindBugsPublisher', pattern: '**/target/findbugsXml.xml'])
    //     }
 
-        stage('Documentation') {
-            try{
-                rtMaven.run pom: 'pom.xml', goals: 'javadoc:javadoc -B -e'
-                step([$class: 'JavadocArchiver', javadocDir: 'target/site/apidocs', keepAll: false])
-             }catch(Exception e){
-                echo "Documentation was not successful."
-            }
-        }
 
-        stage('Code Coverage') {
-            try{
-                step([$class: 'JacocoPublisher', execPattern: '**/target/coverage-reports/jacoco*.exec', exclusionPattern: '**/Messages.class'])
-            }catch(Exception e){
-                echo "Code Coverage was not successful."
-            }
-        }
-
-        stage('Archive Artifacts') {
-            //step([$class: 'ArtifactArchiver', artifacts: '**/target/*.jar', fingerprint: true])
-            archive '**/target/*.jar'
-        }
+//        stage('Archive Artifacts') {
+//            //step([$class: 'ArtifactArchiver', artifacts: '**/target/*.jar', fingerprint: true])
+//            archive '**/target/*.jar'
+//        }
       
-        stage('Deploy') {
-            //unstash is necessary to use the artifact stored in 'Build' stage
-            unstash 'artifact'
+//        stage('Deploy') {
+//            //unstash is necessary to use the artifact stored in 'Build' stage
+//            unstash 'artifact'
             
-            // Do not change the credentialsId.  This is the credential to deploy to predix-devops-runtime on CF1
-            withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: '2ff06a29-9500-4251-bd7a-903f54eab497', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
-               sh 'echo uname=$USERNAME pwd=$PASSWORD'
-               sh 'cf login -a https://api.system.aws-usw02-pr.ice.predix.io -u $USERNAME -p $PASSWORD -o predix-devops-runtime -s dev'
-            }
+//            // Do not change the credentialsId.  This is the credential to deploy to predix-devops-runtime on CF1
+//            withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: '2ff06a29-9500-4251-bd7a-903f54eab497', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+//               sh 'echo uname=$USERNAME pwd=$PASSWORD'
+//               sh 'cf login -a https://api.system.aws-usw02-pr.ice.predix.io -u $USERNAME -p $PASSWORD -o predix-devops-runtime -s dev'
+//            }
             
-            sh 'cf push'
-            sh 'cf a'
-        }
+//            sh 'cf push'
+//            sh 'cf a'
+//        }
         
         stage('TinFoil') {
             echo "before calling tinfoil"
