@@ -9,6 +9,7 @@ node ("mesos-java8"){
         // **       in the global configuration.
         mvnHome = tool 'M3'
     }
+    
     stage('Build') {
     
         // Run the maven build
