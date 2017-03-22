@@ -89,8 +89,9 @@ try
         stage('TinFoil') {
             echo "Calling Tinfoil via script"  
    //           sh '/usr/bin/curl --insecure -v https://tinfoil.ice.ge.com/api/v1/sites/ci-cd-demo/scans -X POST -d "site[name]=ci-cd-demo" -d "site[url]=https://cicd-demo-host.run.aws-usw02-pr.ice.predix.io/greeting" -H "Authorization:Token token=S9T/8ODFvFMurjxO9/6Fz0BE, access_key=/Hx9SNDwi8DxYwjcVrmzLANM"'
-              sh '/usr/bin/curl --insecure -v '+ tinfoilURL + ' -X POST -d "site[name]=' + siteName +'" -d "site[url]=' + appURL +'" -H "Authorization:Token token=' + tinfoilToken +', access_key=' + tinfoilAccessKey +'"'
+   //           sh '/usr/bin/curl --insecure -v '+ tinfoilURL + ' -X POST -d "site[name]=' + siteName +'" -d "site[url]=' + appURL +'" -H "Authorization:Token token=' + tinfoilToken +', access_key=' + tinfoilAccessKey +'"'
    //           sh 'tinfoil_startscan_wparams.sh '+ tinfoilURL + ' '+ siteName + ' '+ appURL + ' '+ tinfoilToken + ' '+ tinfoilAccessKey +''
+               sh "/usr/bin/curl --insecure -v ${tinfoilURL} -X POST -d 'site[name]=${siteName}' -d 'site[url]=${appURL}' -H 'Authorization:Token token=${tinfoilToken}, access_key=${tinfoilAccessKey}'"
         }
     }
 
