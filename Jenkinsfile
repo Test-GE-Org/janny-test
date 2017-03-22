@@ -10,16 +10,16 @@ try
 {
    
     node ("predixci-jdk-1.8"){
-
+/*
         def artServer = Artifactory.server('R2-artifactory')
         def shortCommit 
         def rtMaven = Artifactory.newMavenBuild()
         rtMaven.resolver server: artServer, releaseRepo: 'libs-release', snapshotRepo: 'libs-snapshot'
         rtMaven.deployer server: artServer, releaseRepo: 'libs-release-local', snapshotRepo: 'libs-snapshot-local'
-        rtMaven.deployer.artifactDeploymentPatterns.addInclude("**/target/*.jar")
-        rtMaven.deployer.deployArtifacts = true
+*/ //        rtMaven.deployer.artifactDeploymentPatterns.addInclude("**/target/*.jar")
+/*        rtMaven.deployer.deployArtifacts = true
         rtMaven.tool = 'M3'
-
+*/
         stage('GitCheckout') { 
             echo branchName
             checkout scm
