@@ -40,6 +40,7 @@ node ("mesos-java8"){
             echo "deployed staging sucessfully"
         }
     }
+    
     deployJobs["perf"] = {
         node {
             echo "deploying to perf environment."
