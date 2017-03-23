@@ -19,6 +19,7 @@ node ("mesos-java8"){
     stage('DeployToDev') {
         echo "deploying to dev env"
     }
+    
     stage('StageArtifacts') {
         junit '**/target/surefire-reports/TEST-*.xml'
         archive 'target/*.jar'
