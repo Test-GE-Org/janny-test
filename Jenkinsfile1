@@ -29,6 +29,7 @@ node ("mesos-java8"){
         junit '**/target/surefire-reports/TEST-*.xml'
         archive 'target/*.jar'
     }
+    
     def deployJobs = [:]
 
     deployJobs["staging"] = {
