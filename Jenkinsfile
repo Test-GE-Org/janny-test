@@ -11,7 +11,6 @@ def tinfoilAccessKey = "/Hx9SNDwi8DxYwjcVrmzLANM"
 
 try 
 {
-   
     node ("predixci-jdk-1.8"){
 /*
         def artServer = Artifactory.server('R2-artifactory')
