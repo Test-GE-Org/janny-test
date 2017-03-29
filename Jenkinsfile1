@@ -50,6 +50,7 @@ node ("mesos-java8"){
     stage('Deploy') {
         parallel deployJobs
     }
+    
     def UItestJobs = [:]
     UItestJobs["chrome"] = {
         node {
