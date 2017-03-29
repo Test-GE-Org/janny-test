@@ -1,4 +1,5 @@
 node ("mesos-java8"){
+  
     def mvnHome
     
     stage('GitCheckout') { // for display purposes
