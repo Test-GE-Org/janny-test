@@ -1,9 +1,9 @@
 ---
 applications:
-- name: gs-rest-service
+- name: gs-rest-service-janny
   memory: 256M
   instances: 1
-  host: cicd-demo-host
+  host: cicd-host
   buildpack: https://github.com/cloudfoundry/java-buildpack.git#v3.7
   # domain: guides.spring.io
   path: target/gs-rest-service-0.1.0.jar
