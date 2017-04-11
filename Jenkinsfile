@@ -20,7 +20,8 @@ try
     node ("predixci-jdk-1.8"){
         
         sh 'ls -lrt  /usr/local/bin/'
-        sh 'locate tinfoil_startscan_checkstatus.sh'
+        sh 'ls -lrt /usr/bin/'
+        sh 'which tinfoil_startscan_checkstatus'
 /*
         def artServer = Artifactory.server('R2-artifactory')
         def shortCommit 
@@ -96,7 +97,7 @@ try
         
         stage('TinFoil-APIScan') {
             echo "Calling Tinfoil API Scan"
-            sh "tinfoil_startscan_checkstatus.sh ${TF_apiToken} ${TF_apiAccessKey} ${TF_apiURL} ${TF_apiID}"
+            sh "tinfoil_startscan_checkstatus ${TF_apiToken} ${TF_apiAccessKey} ${TF_apiURL} ${TF_apiID}"
         }
         
         stage('TinFoil-WebappScan') {
@@ -111,7 +112,7 @@ try
             
             // Shell scripts with parameters
             // sh 'tinfoil_startscan_wparams.sh '+ TF_webappURL + ' '+ TF_siteName + ' '+ TF_appURL + ' '+ TF_webappToken + ' '+ TF_webappAccessKey +''
-            sh "tinfoil_startscan_wparams.sh ${TF_webappURL} ${TF_siteName} ${TF_appURL} ${TF_webappToken} ${TF_webappAccessKey}"
+            sh "tinfoil_startscan_wparams ${TF_webappURL} ${TF_siteName} ${TF_appURL} ${TF_webappToken} ${TF_webappAccessKey}"
         }
         
     }
