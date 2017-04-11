@@ -9,9 +9,9 @@ def TF_siteName = "ci-cd-demo"
 def TF_webappToken = "S9T/8ODFvFMurjxO9/6Fz0BE"
 def TF_webappAccessKey = "/Hx9SNDwi8DxYwjcVrmzLANM"
 
-// Tinfoil API Scan variables
+// Tinfoil API Scan variables. apiID = API_ID, not API_Collection_ID
 def TF_apiURL = "https://tf01-api.tf.ice.predix.io"
-def TF_apiID = 81
+def TF_apiID = 151
 def TF_apiToken = "PV0fhF7AbvdrcdAiyA8m9Fww"
 def TF_apiAccessKey = "B-zow6i9PsjGe85-fzMMjqdo"
 
