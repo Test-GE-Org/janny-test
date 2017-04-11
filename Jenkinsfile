@@ -91,6 +91,11 @@ try
 //            sh 'cf a'
 //        }
         
+        stage('TinFoil-APIScan') {
+            echo "Calling Tinfoil API Scan"
+            sh "tinfoil_startscan_checkstatus.sh ${TF_apiToken} ${TF_apiAccessKey} ${TF_apiURL} ${TF_apiID}"
+        }
+        
         stage('TinFoil-WebappScan') {
             echo "Calling Tinfoil WebApps Scan"  
             
@@ -104,11 +109,6 @@ try
             // Shell scripts with parameters
             // sh 'tinfoil_startscan_wparams.sh '+ TF_webappURL + ' '+ TF_siteName + ' '+ TF_appURL + ' '+ TF_webappToken + ' '+ TF_webappAccessKey +''
             sh "tinfoil_startscan_wparams.sh ${TF_webappURL} ${TF_siteName} ${TF_appURL} ${TF_webappToken} ${TF_webappAccessKey}"
-        }
-        
-        stage('TinFoil-APIScan') {
-            echo "Calling Tinfoil API Scan"
-            sh "tinfoil_startscan_checkstatus.sh ${TF_apiToken} ${TF_apiAccessKey} ${TF_apiURL} ${TF_apiID}"
         }
         
     }
