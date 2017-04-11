@@ -19,7 +19,8 @@ try
 {
     node ("predixci-jdk-1.8"){
         
-        sh 'ls -lrt  /usr/local/bin/tinfoil*'
+        sh 'ls -lrt  /usr/local/bin/'
+        sh 'locate tinfoil_startscan_checkstatus.sh'
 /*
         def artServer = Artifactory.server('R2-artifactory')
         def shortCommit 
