@@ -18,6 +18,8 @@ def TF_apiAccessKey = "B-zow6i9PsjGe85-fzMMjqdo"
 try 
 {
     node ("predixci-jdk-1.8"){
+        
+        sh 'ls -lrt  /usr/local/bin/tinfoil*'
 /*
         def artServer = Artifactory.server('R2-artifactory')
         def shortCommit 
