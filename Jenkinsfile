@@ -2,12 +2,18 @@
 def branchName = env.BRANCH_NAME
 def complianceEnabled = true;
 
-// Tinfoil variables
-def tinfoilURL = "https://tinfoil.ice.ge.com/api/v1/sites/ci-cd-demo/scans"
-def appURL = "https://cicd-demo-host.run.aws-usw02-pr.ice.predix.io/greeting"
-def siteName = "ci-cd-demo"
-def tinfoilToken = "S9T/8ODFvFMurjxO9/6Fz0BE"
-def tinfoilAccessKey = "/Hx9SNDwi8DxYwjcVrmzLANM"
+// Tinfoil WebApp Scan variables
+def TF_webappURL = "https://tinfoil.ice.ge.com/api/v1/sites/ci-cd-demo/scans"
+def TF_appURL = "https://cicd-demo-host.run.aws-usw02-pr.ice.predix.io/greeting"
+def TF_siteName = "ci-cd-demo"
+def TF_webappToken = "S9T/8ODFvFMurjxO9/6Fz0BE"
+def TF_webappAccessKey = "/Hx9SNDwi8DxYwjcVrmzLANM"
+
+// Tinfoil API Scan variables
+def TF_apiURL = "https://tf01-api.tf.ice.predix.io"
+def TF_apiID = 81
+def TF_apiToken = "PV0fhF7AbvdrcdAiyA8m9Fww"
+def TF_apiAccessKey = "B-zow6i9PsjGe85-fzMMjqdo"
 
 try 
 {
@@ -85,14 +91,26 @@ try
 //            sh 'cf a'
 //        }
         
-        stage('TinFoil') {
-            echo "Calling Tinfoil via script"  
-   //           sh '/usr/bin/curl --insecure -v https://tinfoil.ice.ge.com/api/v1/sites/ci-cd-demo/scans -X POST -d "site[name]=ci-cd-demo" -d "site[url]=https://cicd-demo-host.run.aws-usw02-pr.ice.predix.io/greeting" -H "Authorization:Token token=S9T/8ODFvFMurjxO9/6Fz0BE, access_key=/Hx9SNDwi8DxYwjcVrmzLANM"'
-   //           sh '/usr/bin/curl --insecure -v '+ tinfoilURL + ' -X POST -d "site[name]=' + siteName +'" -d "site[url]=' + appURL +'" -H "Authorization:Token token=' + tinfoilToken +', access_key=' + tinfoilAccessKey +'"'
-   //         sh 'tinfoil_startscan_wparams.sh '+ tinfoilURL + ' '+ siteName + ' '+ appURL + ' '+ tinfoilToken + ' '+ tinfoilAccessKey +''
-                sh "tinfoil_startscan_wparams.sh ${tinfoilURL} ${siteName} ${appURL} ${tinfoilToken} ${tinfoilAccessKey}"
-   //            sh "/usr/bin/curl --insecure -v ${tinfoilURL} -X POST -d 'site[name]=${siteName}' -d 'site[url]=${appURL}' -H 'Authorization:Token token=${tinfoilToken}, access_key=${tinfoilAccessKey}'"
+        stage('TinFoil-WebappScan') {
+            echo "Calling Tinfoil WebApps Scan"  
+            
+            // Command line with no parameters
+            // sh '/usr/bin/curl --insecure -v https://tinfoil.ice.ge.com/api/v1/sites/ci-cd-demo/scans -X POST -d "site[name]=ci-cd-demo" -d "site[url]=https://cicd-demo-host.run.aws-usw02-pr.ice.predix.io/greeting" -H "Authorization:Token token=S9T/8ODFvFMurjxO9/6Fz0BE, access_key=/Hx9SNDwi8DxYwjcVrmzLANM"'
+            
+            // Command line with parameters
+            // sh '/usr/bin/curl --insecure -v '+ TF_webappURL + ' -X POST -d "site[name]=' + TF_siteName +'" -d "site[url]=' + TF_appURL +'" -H "Authorization:Token token=' + TF_webappToken +', access_key=' + TF_webappAccessKey +'"'
+            // sh "/usr/bin/curl --insecure -v ${TF_webappURL} -X POST -d 'site[name]=${TF_siteName}' -d 'site[url]=${TF_appURL}' -H 'Authorization:Token token=${TF_webappToken}, access_key=${TF_webappAccessKey}'"
+            
+            // Shell scripts with parameters
+            // sh 'tinfoil_startscan_wparams.sh '+ TF_webappURL + ' '+ TF_siteName + ' '+ TF_appURL + ' '+ TF_webappToken + ' '+ TF_webappAccessKey +''
+            sh "tinfoil_startscan_wparams.sh ${TF_webappURL} ${TF_siteName} ${TF_appURL} ${TF_webappToken} ${TF_webappAccessKey}"
         }
+        
+        stage('TinFoil-APIScan') {
+            echo "Calling Tinfoil API Scan"
+            sh "tinfoil_startscan_checkstatus.sh ${TF_apiToken} ${TF_apiAccessKey} ${TF_apiURL} ${TF_apiID}"
+        }
+        
     }
 
 /*
