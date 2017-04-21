@@ -110,7 +110,8 @@ try
             echo "Calling Tinfoil API Scan"
             
             // temporary called it without .sh
-            sh "tinfoil_startscan_checkstatus ${TF_apiToken} ${TF_apiAccessKey} ${TF_apiURL} ${TF_apiID}"
+            // sh "tinfoil_startscan_checkstatus ${TF_apiToken} ${TF_apiAccessKey} ${TF_apiURL} ${TF_apiID}"
+            curl https://tf01-api.tf.ice.predix.io
             
             // sh "tinfoil_startscan_checkstatus.sh ${TF_apiToken} ${TF_apiAccessKey} ${TF_apiURL} ${TF_apiID}"
         }
