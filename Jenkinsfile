@@ -103,7 +103,9 @@ try
             
             // Shell scripts with parameters
             // sh 'tinfoil_startscan_wparams.sh '+ TF_webappURL + ' '+ TF_siteName + ' '+ TF_appURL + ' '+ TF_webappToken + ' '+ TF_webappAccessKey +''
-            sh "tinfoil_startscan_wparams.sh ${TF_webappURL} ${TF_siteName} ${TF_appURL} ${TF_webappToken} ${TF_webappAccessKey}"
+
+// Temp comment out            
+//            sh "tinfoil_startscan_wparams.sh ${TF_webappURL} ${TF_siteName} ${TF_appURL} ${TF_webappToken} ${TF_webappAccessKey}"
         }
         
         stage('TinFoil-APIScan') {
@@ -111,7 +113,7 @@ try
             
             // temporary called it without .sh
             // sh "tinfoil_startscan_checkstatus ${TF_apiToken} ${TF_apiAccessKey} ${TF_apiURL} ${TF_apiID}"
-            sh 'curl -v -4 --insecure https://tf01-api.tf.ice.predix.io'
+            sh 'curl -v -4 https://tf01-api.tf.ice.predix.io'
             
             // sh "tinfoil_startscan_checkstatus.sh ${TF_apiToken} ${TF_apiAccessKey} ${TF_apiURL} ${TF_apiID}"
         }
