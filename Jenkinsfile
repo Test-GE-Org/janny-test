@@ -90,7 +90,6 @@ try
 //            sh 'cf push'
 //            sh 'cf a'
 //        }
-        
 
         stage('TinFoil-WebappScan') {
             echo "Calling Tinfoil WebApps Scan"  
