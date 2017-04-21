@@ -10,7 +10,8 @@ def TF_webappToken = "S9T/8ODFvFMurjxO9/6Fz0BE"
 def TF_webappAccessKey = "/Hx9SNDwi8DxYwjcVrmzLANM"
 
 // Tinfoil API Scan variables. apiID = API_ID, not API_Collection_ID
-def TF_apiURL = "https://tf01-api.tf.ice.predix.io"
+// def TF_apiURL = "https://tf01-api.tf.ice.predix.io"
+def TF_apiURL = "https://internal-tinfoil-61433206.us-east- 1.elb.amazonaws.com/developer/"
 def TF_apiID = 151
 def TF_apiToken = "PV0fhF7AbvdrcdAiyA8m9Fww"
 def TF_apiAccessKey = "B-zow6i9PsjGe85-fzMMjqdo"
@@ -112,9 +113,8 @@ try
             echo "Calling Tinfoil API Scan"
             
             // temporary called it without .sh
-            // sh "tinfoil_startscan_checkstatus ${TF_apiToken} ${TF_apiAccessKey} ${TF_apiURL} ${TF_apiID}"
-            sh 'curl --version'
-            sh 'curl -v -3 https://tf01-api.tf.ice.predix.io'
+            sh "tinfoil_startscan_checkstatus ${TF_apiToken} ${TF_apiAccessKey} ${TF_apiURL} ${TF_apiID}"
+            // sh 'curl -v -3 https://tf01-api.tf.ice.predix.io'
             
             // sh "tinfoil_startscan_checkstatus.sh ${TF_apiToken} ${TF_apiAccessKey} ${TF_apiURL} ${TF_apiID}"
         }
