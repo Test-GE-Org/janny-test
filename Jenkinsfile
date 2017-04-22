@@ -11,7 +11,7 @@ def TF_webappAccessKey = "/Hx9SNDwi8DxYwjcVrmzLANM"
 
 // Tinfoil API Scan variables. apiID = API_ID, not API_Collection_ID
 // def TF_apiURL = "https://tf01-api.tf.ice.predix.io"
-def TF_apiURL = "https://internal-tinfoil-61433206.us-east-1.elb.amazonaws.com"
+def TF_apiURL = "https://internal-tinfoil-61433206.us-east-1.elb.amazonaws.com/developer"
 def TF_apiID = 151
 def TF_apiToken = "PV0fhF7AbvdrcdAiyA8m9Fww"
 def TF_apiAccessKey = "B-zow6i9PsjGe85-fzMMjqdo"
