@@ -93,6 +93,8 @@ try
 //        }
 
         stage('TinFoil-WebappScan') {
+            
+            sh 'env | grep -i proxy'
             echo "Calling Tinfoil WebApps Scan"  
             
             // Command line with no parameters
