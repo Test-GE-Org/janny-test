@@ -18,7 +18,8 @@ def TF_apiAccessKey = "NfBuOh9OOgvEYLT2yV4FABfO"
 
 try 
 {
-    node ("predixci-jdk-1.8"){
+    // node ("predixci-jdk-1.8"){
+    node {    
 /*
         def artServer = Artifactory.server('R2-artifactory')
         def shortCommit 
